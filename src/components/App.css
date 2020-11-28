@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+.ui.stacked.segment:after, .ui.stacked.segment:before, .ui.stacked.segments:after, .ui.stacked.segments:before{
+  border-top: none !important;
+  background: none !important;
+}
