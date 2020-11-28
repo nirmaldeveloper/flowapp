@@ -1,3 +1,7 @@
+import React from "react";
+import { Grid } from "semantic-ui-react";
+import "./App.css";
+import { connect } from "react-redux";
 import logo from '../logo.svg';
 import './App.css';
 
