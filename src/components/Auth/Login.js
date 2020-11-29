@@ -56,7 +56,7 @@ class Login extends React.Component {
   };
 
   render() {
-    const { email, password, errors, loading } = this.state;
+    const { email, password, errors, loading} = this.state;
 
     return (
         <div >
@@ -102,7 +102,7 @@ class Login extends React.Component {
               >
                 Login
               </Button>
-            <Link className="mt25" to="/register">Don't have an account? Signup here.</Link>
+            <Link to="/register">Don't have an account? Signup here.</Link>
             </Segment>
             
           </Form>

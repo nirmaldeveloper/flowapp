@@ -11,11 +11,13 @@ class AppHeader extends React.Component {
     event.preventDefault();
       firebase
         .auth()
-        .signOut();
+        .signOut().then(()=>{
+        });
+        
   };
   render() {
     const { primaryColor } = this.props;
-
+    const pathname = window.location.pathname;
     return (
         <Grid style={{ background: primaryColor }}>
         <Grid.Column>
@@ -25,13 +27,15 @@ class AppHeader extends React.Component {
             <FontAwesomeIcon icon={faSitemap} /> &nbsp;
               <Header.Content>FLOWAPP</Header.Content>
             </Header>
-            <Button
+            { pathname !== "/login" && pathname !=="/register" &&
+            (<Button
               onClick={this.logOut}
               floated="right"  
               color="teal"
                 size="small">
                 Logout
               </Button>
+            )}
             </Grid.Row>
             </Grid.Column>
       </Grid>
