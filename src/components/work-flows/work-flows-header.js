@@ -2,7 +2,7 @@ import React from "react";
 import _ from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSitemap,faPlus,faFilter, faSearch } from '@fortawesome/free-solid-svg-icons'
-import { Grid, Header, Icon, Dropdown, Image, Modal, Input, Button,Search } from "semantic-ui-react";
+import { Segment,Grid, Header, Icon, Dropdown, Image, Modal, Input, Button,Search } from "semantic-ui-react";
 import firebase from "../../firebase";
 
 const source = _.times(5, () => ({
@@ -47,8 +47,12 @@ class WorkFlowsHeader extends React.Component {
     return (
         <Grid style={{ background: primaryColor }}>
         <Grid.Column>
-          <Grid.Row style={{ padding: "1.2em", margin: 0 }}>
+          <Segment stacked>
+          <Grid.Row style={{height:"50px", padding: "1.2em", margin: 0 }}>
+
           <Search
+          floated ="left"
+          style={{float: "left"}}
             input={{ icon: 'search', iconPosition: 'left' }}
             loading={isLoading}
             onResultSelect={this.handleResultSelect}
@@ -66,7 +70,9 @@ class WorkFlowsHeader extends React.Component {
             <FontAwesomeIcon icon={faPlus} /> &nbsp;
                 Create Workflow
               </Button>
+
             </Grid.Row>
+            </Segment>
             </Grid.Column>
       </Grid>
     );

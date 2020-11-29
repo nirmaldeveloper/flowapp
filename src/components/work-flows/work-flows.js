@@ -23,7 +23,6 @@ class WorkFlows extends React.Component {
     const pathname = window.location.pathname;
     return (
     <div>
-        <p>some text</p>
         <WorkFlowsHeader/>
         <WorkFlow/>
     </div>
