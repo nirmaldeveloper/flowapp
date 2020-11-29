@@ -8,6 +8,8 @@ import AppHeader from "./common/app-header";
 
 
 function App({currentUser}) {
+  console.log(currentUser);
+  
   return (
     <div className="App">
     <AppHeader currentUser={currentUser} primaryColor="purple"/>
