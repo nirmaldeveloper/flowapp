@@ -55,7 +55,7 @@ class Root extends React.Component {
 
 const mapStateFromProps = state => ({
   isLoading: state.user.isLoading,
-  user:state.user
+  currentUser:state.user
 });
 
 const RootWithAuth = withRouter(
