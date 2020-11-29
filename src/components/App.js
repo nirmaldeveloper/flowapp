@@ -5,8 +5,7 @@ import { connect } from "react-redux";
 import logo from '../logo.svg';
 import './App.css';
 import AppHeader from "./common/app-header";
-import workFlowHeader from "./work-flows/work-flow-header";
-import workFlows from "./work-flows/work-flows";
+import WorkFlows from "./work-flows/work-flows";
 
 
 function App({currentUser}) {
@@ -15,7 +14,7 @@ function App({currentUser}) {
   return (
     <div className="App">
     <AppHeader currentUser={currentUser} primaryColor="purple"/>
-      <workFlows/>
+      <WorkFlows/>
     </div>
   );
 }

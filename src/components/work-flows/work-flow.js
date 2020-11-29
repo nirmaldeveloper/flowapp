@@ -6,11 +6,10 @@ import { Form, Segment, Grid, Header, Icon, Dropdown, Image, Modal, Input, Butto
 import firebase from "../../firebase";
 import { connect } from "react-redux";
 
-import node from "./work-flow-node";
-import workFlowHeader from "./work-flow-header";
-import workFlowNode from "./work-flow-node";
+import WorkFlowHeader from "./work-flow-header";
+import WorkFlowNode from "./work-flow-node";
 
-class workFlow extends React.Component {
+class WorkFlow extends React.Component {
   state = {
     name: "",
     status: 1,
@@ -21,8 +20,8 @@ class workFlow extends React.Component {
     const pathname = window.location.pathname;
     return (
     <div>
-        <workFlowHeader/>
-        <workFlowNode/>
+        <WorkFlowHeader/>
+        <WorkFlowNode/>
     </div>
         );
     }
@@ -31,4 +30,4 @@ class workFlow extends React.Component {
 const mapStateToProps = state => ({
   currentUser: state.user.currentUser,
 });
-export default connect(mapStateToProps)(workFlow);
+export default connect(mapStateToProps)(WorkFlow);

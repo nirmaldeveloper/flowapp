@@ -9,11 +9,11 @@ import { faTrash, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { Grid, Header, Icon, Dropdown, Image, Modal, Input, Button } from "semantic-ui-react";
 import firebase from "../../firebase";
 import { connect } from "react-redux";
-import workFlow from "./work-flow";
-import workFlowHeader from "./work-flow-header";
+import WorkFlow from "./work-flow";
+import WorkFlowsHeader from "./work-flows-header";
 
 
-class workFlows extends React.Component {
+class WorkFlows extends React.Component {
   state = {
     name: "",
     status: 1,
@@ -24,8 +24,8 @@ class workFlows extends React.Component {
     return (
     <div>
         <p>some text</p>
-        <workFlowsHeader/>
-        <workFlow/>
+        <WorkFlowsHeader/>
+        <WorkFlow/>
     </div>
         );
     }
@@ -34,4 +34,4 @@ class workFlows extends React.Component {
 const mapStateToProps = state => ({
   currentUser: state.user.currentUser,
 });
-export default connect(mapStateToProps)(workFlows);
+export default connect(mapStateToProps)(WorkFlows);
