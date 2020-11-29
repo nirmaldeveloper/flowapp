@@ -60,13 +60,13 @@ class Login extends React.Component {
 
     return (
         <div >
-    <AppHeader primaryColor="violet"/>
+    <AppHeader primaryColor="purple"/>
       <Grid textAlign="center" verticalAlign="middle" className="app">
         <Grid.Column style={{ maxWidth: 450 }}>
           
           <Form onSubmit={this.handleSubmit} size="large">
             <Segment stacked>
-            <Header as="h1" icon color="violet" textAlign="center">
+            <Header as="h1" icon color="blue" textAlign="center">
             Login
           </Header>
               <Form.Input
@@ -74,7 +74,7 @@ class Login extends React.Component {
                 name="email"
                 icon="mail"
                 iconPosition="left"
-                placeholder="Email Address"
+                placeholder="Email"
                 onChange={this.handleChange}
                 value={email}
                 className={this.handleInputError(errors, "email")}
@@ -95,14 +95,14 @@ class Login extends React.Component {
 
               <Button
                 disabled={loading}
-                className={loading ? "loading" : ""}
-                color="violet"
+                className={loading ? "row loading mb25" : "row mb25"}
+                color="blue"
                 fluid
                 size="large"
               >
                 Login
               </Button>
-            <Link to="/register">Don't have an account? Signup here.</Link>
+            <Link className="mt25" to="/register">Don't have an account? Signup here.</Link>
             </Segment>
             
           </Form>

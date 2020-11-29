@@ -12,6 +12,8 @@ import {
   Icon
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
+import AppHeader from "../common/app-header";
+
 
 class Register extends React.Component {
   state = {
@@ -130,11 +132,12 @@ class Register extends React.Component {
     } = this.state;
 
     return (
+        <div >
+    <AppHeader primaryColor="purple"/>
       <Grid textAlign="center" verticalAlign="middle" className="app">
         <Grid.Column style={{ maxWidth: 450 }}>
           <Header as="h1" icon color="orange" textAlign="center">
-            <Icon name="puzzle piece" color="orange" />
-            Register for DevChat
+            Register for FLOWAPP
           </Header>
           <Form onSubmit={this.handleSubmit} size="large">
             <Segment stacked>
@@ -154,7 +157,7 @@ class Register extends React.Component {
                 name="email"
                 icon="mail"
                 iconPosition="left"
-                placeholder="Email Address"
+                placeholder="Email"
                 onChange={this.handleChange}
                 value={email}
                 className={this.handleInputError(errors, "email")}
@@ -187,13 +190,14 @@ class Register extends React.Component {
 
               <Button
                 disabled={loading}
-                className={loading ? "loading" : ""}
+                className={loading ? "loading mb25" : "mb25"}
                 color="orange"
                 fluid
                 size="large"
               >
                 Submit
               </Button>
+              <Link to="/login">Already a user? Login.</Link>
             </Segment>
           </Form>
           {errors.length > 0 && (
@@ -202,11 +206,9 @@ class Register extends React.Component {
               {this.displayErrors(errors)}
             </Message>
           )}
-          <Message>
-            Already a user? <Link to="/login">Login</Link>
-          </Message>
-        </Grid.Column>
+          </Grid.Column>
       </Grid>
+      </div>
     );
   }
 }
