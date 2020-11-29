@@ -5,12 +5,12 @@ import "firebase/database";
 import "firebase/storage";
 
 var config = {
-  apiKey: "AIzaSyCREQMYIbAYKscrS_JYvWP4KpMsF_jI5Bg",
-  authDomain: "react-slack-clone.firebaseapp.com",
-  databaseURL: "https://react-slack-clone.firebaseio.com",
-  projectId: "react-slack-clone",
-  storageBucket: "react-slack-clone.appspot.com",
-  messagingSenderId: "423395756405"
+  apiKey: "AIzaSyA3UJiIY96bFyKqyeFw2XcOiyNlB4cmolQ",
+  authDomain: "reacttest432.firebaseapp.com",
+  databaseURL: "https://reacttest432.firebaseio.com",
+  projectId: "reacttest432",
+  storageBucket: "reacttest432.appspot.com/",
+  messagingSenderId: "1046292441655"
 };
 firebase.initializeApp(config);
 
