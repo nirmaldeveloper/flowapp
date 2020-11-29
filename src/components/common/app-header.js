@@ -7,6 +7,9 @@ import firebase from "../../firebase";
 
 
 class AppHeader extends React.Component {
+  state={
+    user:this.props.currentUser
+  }
   logOut = event => {
     event.preventDefault();
       firebase
@@ -23,11 +26,11 @@ class AppHeader extends React.Component {
         <Grid.Column>
           <Grid.Row style={{ padding: "1.2em", margin: 0 }}>
             {/* App Header */}
-            <Header inverted floated="left" as="h2">
+            <Header style={{marginBottom: "0px"}} inverted floated="left" as="h2">
             <FontAwesomeIcon icon={faSitemap} /> &nbsp;
               <Header.Content>FLOWAPP</Header.Content>
             </Header>
-            { pathname !== "/login" && pathname !=="/register" &&
+            { this.state.user !== null && this.state.user !== undefined &&
             (<Button
               onClick={this.logOut}
               floated="right"  

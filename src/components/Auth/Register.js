@@ -2,6 +2,8 @@
 import React from "react";
 import firebase from "../../firebase";
 import md5 from "md5";
+import { connect } from "react-redux";
+
 import {
   Grid,
   Form,
@@ -212,5 +214,7 @@ class Register extends React.Component {
     );
   }
 }
-
-export default Register;
+const mapStateToProps = state => ({
+    currentUser: state.user.currentUser,
+  });
+export default connect(mapStateToProps)(Register);

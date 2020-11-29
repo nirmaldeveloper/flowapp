@@ -7,13 +7,15 @@ import './App.css';
 import AppHeader from "./common/app-header";
 
 
-function App() {
+function App({currentUser}) {
   return (
     <div className="App">
-    <AppHeader primaryColor="purple"/>
+    <AppHeader currentUser={currentUser} primaryColor="purple"/>
       
     </div>
   );
 }
-
-export default App;
+const mapStateToProps = state => ({
+  currentUser: state.user.currentUser,
+});
+export default connect(mapStateToProps)(App);

@@ -1,5 +1,7 @@
 import React from "react";
 import firebase from "../../firebase";
+import { connect } from "react-redux";
+
 import {
   Grid,
   Form,
@@ -119,5 +121,7 @@ class Login extends React.Component {
     );
   }
 }
-
-export default Login;
+const mapStateToProps = state => ({
+    currentUser: state.user.currentUser,
+  });
+export default connect(mapStateToProps)(Login);
