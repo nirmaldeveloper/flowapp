@@ -1,43 +1,45 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSitemap } from '@fortawesome/free-solid-svg-icons'
+import { faSitemap,faPlus,faFilter, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { Grid, Header, Icon, Dropdown, Image, Modal, Input, Button } from "semantic-ui-react";
 import firebase from "../../firebase";
 
 
-class AppHeader extends React.Component {
+class workFlowHeader extends React.Component {
   state={
     user:this.props.currentUser
   }
-  logOut = event => {
+  createWorkflow = event =>{
     event.preventDefault();
-      firebase
-        .auth()
-        .signOut().then(()=>{
-        });
-        
-  };
+
+  }
+  
   render() {
-    const { primaryColor } = this.props;
+    const { primaryColor } = "#ffffff";
     const pathname = window.location.pathname;
     return (
         <Grid style={{ background: primaryColor }}>
         <Grid.Column>
           <Grid.Row style={{ padding: "1.2em", margin: 0 }}>
-            {/* App Header */}
-            <Header style={{marginBottom: "0px"}} inverted floated="left" as="h2">
-            <FontAwesomeIcon icon={faSitemap} /> &nbsp;
-              <Header.Content>FLOWAPP</Header.Content>
-            </Header>
-            { this.state.user !== null && this.state.user !== undefined &&
+          <Search
+            input={{ icon: 'search', iconPosition: 'left' }}
+            loading={isLoading}
+            onResultSelect={this.handleResultSelect}
+            onSearchChange={_.debounce(this.handleSearchChange, 500, {
+              leading: true,
+            })}
+            results={results}
+            value={value}
+          />
+            
             (<Button
-              onClick={this.logOut}
+              onClick={this.createWorkflow}
               floated="right"  
               color="teal"
                 size="small">
-                Logout
+                Create Workflow
               </Button>
-            )}
+            )
             </Grid.Row>
             </Grid.Column>
       </Grid>
@@ -45,4 +47,4 @@ class AppHeader extends React.Component {
   }
 }
 
-export default AppHeader;
+export default workFlowHeader;
