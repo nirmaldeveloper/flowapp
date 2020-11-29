@@ -136,11 +136,11 @@ class Register extends React.Component {
     <AppHeader primaryColor="purple"/>
       <Grid textAlign="center" verticalAlign="middle" className="app">
         <Grid.Column style={{ maxWidth: 450 }}>
-          <Header as="h1" icon color="orange" textAlign="center">
-            Register for FLOWAPP
-          </Header>
           <Form onSubmit={this.handleSubmit} size="large">
             <Segment stacked>
+            <Header as="h1" icon color="orange" textAlign="center">
+            Register for FLOWAPP
+          </Header>
               <Form.Input
                 fluid
                 name="username"
