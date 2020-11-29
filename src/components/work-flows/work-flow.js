@@ -2,13 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import { Form,
-  Segment,Grid, Header, Icon, Dropdown, Image, Modal, Input, Button } from "semantic-ui-react";
+import { Form, Segment, Grid, Header, Icon, Dropdown, Image, Modal, Input, Button } from "semantic-ui-react";
 import firebase from "../../firebase";
 import { connect } from "react-redux";
 
 import node from "./work-flow-node";
 import workFlowHeader from "./work-flow-header";
+import workFlowNode from "./work-flow-node";
 
 class workFlow extends React.Component {
   state = {
@@ -22,6 +22,7 @@ class workFlow extends React.Component {
     return (
     <div>
         <workFlowHeader/>
+        <workFlowNode/>
     </div>
         );
     }

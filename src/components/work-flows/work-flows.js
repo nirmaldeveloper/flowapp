@@ -20,10 +20,10 @@ class workFlows extends React.Component {
     id:null
   };
   render() {
-    const { primaryColor } = this.props;
     const pathname = window.location.pathname;
     return (
     <div>
+        <p>some text</p>
         <workFlowsHeader/>
         <workFlow/>
     </div>
