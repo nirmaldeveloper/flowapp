@@ -8,6 +8,7 @@
     "@fortawesome/react-fontawesome": "^0.1.13",
     "firebase": "^8.1.1",
     "font-awesome": "^4.7.0",
+    "loadash": "^1.0.0",
     "md5": "^2.3.0",
     "mime-types": "^2.1.27",
     "react": "^16.14.0",

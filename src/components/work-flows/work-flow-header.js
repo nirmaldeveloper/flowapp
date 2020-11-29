@@ -1,5 +1,5 @@
 import React from "react";
-import _ from 'lodash'
+import _ from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSitemap,faPlus,faFilter, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { Grid, Header, Icon, Dropdown, Image, Modal, Input, Button,Search } from "semantic-ui-react";
