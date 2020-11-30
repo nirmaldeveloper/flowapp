@@ -8,8 +8,8 @@ import {
   Segment,
   Button,
   Header,
-  Message,
-  Icon
+  Checkbox,
+  Message
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import AppHeader from "../common/app-header";
@@ -18,9 +18,21 @@ class Login extends React.Component {
   state = {
     email: "",
     password: "",
+    isChecked:false,
     errors: [],
     loading: false
   };
+
+  componentDidMount() {
+    if(localStorage.checkbox && localStorage.email !== ""){
+      console.log(localStorage);
+      this.setState({
+        isChecked:true,
+        email:localStorage.username,
+        password:localStorage.password
+      })
+    }
+  }
 
   displayErrors = errors =>
     errors.map((error, i) => <p key={i}>{error.message}</p>);
@@ -29,10 +41,19 @@ class Login extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
+  handleCheckBoxChange = event => {
+    this.setState({ isChecked: !this.state.isChecked });
+  };
+
   handleSubmit = event => {
     event.preventDefault();
     if (this.isFormValid(this.state)) {
       this.setState({ errors: [], loading: true });
+      if(this.state.isChecked && this.state.email !== ""){
+        localStorage.email = this.state.email;
+        localStorage.password = this.state.password;
+        localStorage.checkbox = this.state.isChecked;
+      }
       firebase
         .auth()
         .signInWithEmailAndPassword(this.state.email, this.state.password)
@@ -58,7 +79,7 @@ class Login extends React.Component {
   };
 
   render() {
-    const { email, password, errors, loading} = this.state;
+    const { email, password, errors, loading, isChecked} = this.state;
 
     return (
         <div >
@@ -68,9 +89,9 @@ class Login extends React.Component {
           
           <Form onSubmit={this.handleSubmit} size="large">
             <Segment stacked>
-            <Header as="h1" icon color="blue" textAlign="center">
-            Login
-          </Header>
+              <Header as="h1" icon color="blue" textAlign="center">
+              Login
+              </Header>
               <Form.Input
                 fluid
                 name="email"
@@ -93,6 +114,15 @@ class Login extends React.Component {
                 value={password}
                 className={this.handleInputError(errors, "password")}
                 type="password"
+              />
+
+              <Checkbox
+                name="remeberMe"
+                label="Remember me"
+                float="left"
+                className={"mb25"}
+                onChange={this.handleCheckBoxChange}
+                checked={isChecked}
               />
 
               <Button
