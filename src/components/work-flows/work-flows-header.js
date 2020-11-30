@@ -48,12 +48,12 @@ class WorkFlowsHeader extends React.Component {
         <Grid style={{ background: primaryColor }}>
         <Grid.Column>
           <Segment stacked>
-          <Grid.Row style={{height:"50px", padding: "1.2em", margin: 0 }}>
+          <Grid.Row style={{height:"30px", margin: 0 }}>
 
           <Search
           floated ="left"
           style={{float: "left"}}
-            input={{ icon: 'search', iconPosition: 'left' }}
+            input={{placeholder:'Search Workflows', icon: 'search', iconPosition: 'left' }}
             loading={isLoading}
             onResultSelect={this.handleResultSelect}
             onSearchChange={_.debounce(this.handleSearchChange, 500, {
