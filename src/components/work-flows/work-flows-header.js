@@ -35,8 +35,14 @@ const tagOptions = [
 
 const initialState = { isLoading: false, results: [], value: '' }
 class WorkFlowsHeader extends React.Component {
+  constructor(props) {
+    super(props);
+    };
   state={
     user:this.props.currentUser
+  }
+  openModal = () =>{
+    this.props.openWorkFlowModal();
   }
   handleResultSelect = (e, { result }) => this.setState({ value: result.title })
 
@@ -104,7 +110,7 @@ class WorkFlowsHeader extends React.Component {
           </Dropdown.Menu>
         </Dropdown>
             <Button
-              onClick={this.createWorkflow}
+              onClick={this.openModal}
               floated="right"  
               color="green"
                 size="small">

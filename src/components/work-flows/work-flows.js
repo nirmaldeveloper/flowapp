@@ -18,6 +18,7 @@ class WorkFlows extends React.Component {
     userID:this.props.currentUser.uid,
     workFlows:[],
     workFlowsRef: firebase.database().ref("workFlows"),
+    modal: false
   };
   componentDidMount() {
     console.log(this.state.userID);
@@ -44,12 +45,12 @@ class WorkFlows extends React.Component {
   displayWorkFlows = flows =>
   flows.length > 0 &&
   flows.map(flow => (
-    
         <Grid.Column key={flow.id} style={{ width: "350px", maxHeight:"500px" , marginTop:"50px",marginLeft:"15px", marginRight:"20px"}}>
           <Form onSubmit={this.handleSubmit} size="large">
             <Segment style={{height:"140px"}} stacked>
             <Grid.Row>
-            <Button floated="right" color="red" style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='trash alternate outline' /><Form.Input style={{paddingTop:"10px"}} value={flow.name}></Form.Input> 
+            <Button floated="right" color="red" style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='trash alternate outline' />
+            <span style={{width: "100%",float: "left",paddingTop: "10px",border: "2px grey solid",marginBottom: "25px"}}>{flow.name}</span> 
             </Grid.Row>
             <Grid.Row style={{marginTop:"20px",height:"25px"}}>
             <span floated="left" style={{float:"left",marginLeft:"4px"}}>{flow.status==1 ? 'PENDING': 'COMPLETED'}</span> 
@@ -57,21 +58,52 @@ class WorkFlows extends React.Component {
             </Grid.Row>
             </Segment>
             </Form>
-            </Grid.Column>
-            
-    
+         </Grid.Column>
   ));
 
+  openModal = () => this.setState({ modal: true });
+
+  closeModal = () => this.setState({ modal: false });
+  handleSubmit = event =>{
+    event.preventDefault();
+  // if (this.isFormValid(this.state)) {
+  //   this.addChannel();
+  // }
+  }
   render() {
     const pathname = window.location.pathname;
-    const{workFlows} = this.state;
+    const{workFlows, modal} = this.state;
     return (
     <div>
-        <WorkFlowsHeader/>
+        <WorkFlowsHeader openWorkFlowModal={this.openModal}/>
         <div style={{display:"flex"}}>
-         {this.displayWorkFlows(workFlows)}
+           {this.displayWorkFlows(workFlows)}
          </div>
-    </div>
+         <Modal basic open={modal} onClose={this.closeModal}>
+          <Modal.Header>Add a WorkFlow</Modal.Header>
+          <Modal.Content>
+            <Form onSubmit={this.handleSubmit}>
+              <Form.Field>
+                <Input
+                  fluid
+                  label="Name of Work Flow"
+                  name="workFlowName"
+                  onChange={this.handleChange}
+                />
+              </Form.Field>
+            </Form>
+          </Modal.Content>
+
+          <Modal.Actions>
+            <Button color="green" inverted onClick={this.handleSubmit}>
+              <Icon name="checkmark" /> Add
+            </Button>
+            <Button color="red" inverted onClick={this.closeModal}>
+              <Icon name="remove" /> Cancel
+            </Button>
+          </Modal.Actions>
+        </Modal>
+     </div>
         );
     }
 }
