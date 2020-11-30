@@ -28,7 +28,7 @@ class Login extends React.Component {
       console.log(localStorage);
       this.setState({
         isChecked:true,
-        email:localStorage.username,
+        email:localStorage.email,
         password:localStorage.password
       })
     }
