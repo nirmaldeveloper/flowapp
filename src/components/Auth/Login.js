@@ -115,6 +115,7 @@ class Login extends React.Component {
               />
 
               <Checkbox
+              style={{float: "left"}}
                 name="remeberMe"
                 label="Remember me"
                 float="left"
