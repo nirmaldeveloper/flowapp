@@ -25,7 +25,6 @@ class Login extends React.Component {
 
   componentDidMount() {
     if(localStorage.checkbox && localStorage.email !== ""){
-      console.log(localStorage);
       this.setState({
         isChecked:true,
         email:localStorage.email,
@@ -58,7 +57,6 @@ class Login extends React.Component {
         .auth()
         .signInWithEmailAndPassword(this.state.email, this.state.password)
         .then(signedInUser => {
-          console.log(signedInUser);
         })
         .catch(err => {
           console.error(err);

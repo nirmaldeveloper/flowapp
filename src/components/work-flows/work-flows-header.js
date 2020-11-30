@@ -12,6 +12,63 @@ const source = _.times(5, () => ({
   price: "",
 }));
 
+const tagOptions = [
+  {
+    key: 'Important',
+    text: 'Important',
+    value: 'Important',
+    label: { color: 'red', empty: true, circular: true },
+  },
+  {
+    key: 'Announcement',
+    text: 'Announcement',
+    value: 'Announcement',
+    label: { color: 'blue', empty: true, circular: true },
+  },
+  {
+    key: 'Cannot Fix',
+    text: 'Cannot Fix',
+    value: 'Cannot Fix',
+    label: { color: 'black', empty: true, circular: true },
+  },
+  {
+    key: 'News',
+    text: 'News',
+    value: 'News',
+    label: { color: 'purple', empty: true, circular: true },
+  },
+  {
+    key: 'Enhancement',
+    text: 'Enhancement',
+    value: 'Enhancement',
+    label: { color: 'orange', empty: true, circular: true },
+  },
+  {
+    key: 'Change Declined',
+    text: 'Change Declined',
+    value: 'Change Declined',
+    label: { empty: true, circular: true },
+  },
+  {
+    key: 'Off Topic',
+    text: 'Off Topic',
+    value: 'Off Topic',
+    label: { color: 'yellow', empty: true, circular: true },
+  },
+  {
+    key: 'Interesting',
+    text: 'Interesting',
+    value: 'Interesting',
+    label: { color: 'pink', empty: true, circular: true },
+  },
+  {
+    key: 'Discussion',
+    text: 'Discussion',
+    value: 'Discussion',
+    label: { color: 'green', empty: true, circular: true },
+  },
+]
+
 const initialState = { isLoading: false, results: [], value: '' }
 class WorkFlowsHeader extends React.Component {
   state={
@@ -52,7 +109,7 @@ class WorkFlowsHeader extends React.Component {
 
           <Search
           floated ="left"
-          style={{float: "left"}}
+          style={{float: "left", paddingRight:"10px"}}
             input={{placeholder:'Search Workflows', icon: 'search', iconPosition: 'left' }}
             loading={isLoading}
             onResultSelect={this.handleResultSelect}
@@ -62,6 +119,25 @@ class WorkFlowsHeader extends React.Component {
             results={results}
             value={value}
           />
+          <Dropdown style={{float:"left"}} 
+                    text='Filter'
+                    icon='filter'
+                    floated="left"
+                    labeled
+                    button
+                    className='icon'>
+
+          <Dropdown.Menu floated="left">
+            {/* <Input icon='search' iconPosition='left' className='search' />
+            <Dropdown.Divider />
+            <Dropdown.Header icon='tags' content='Tag Label' /> */}
+            <Dropdown.Menu scrolling>
+              {tagOptions.map((option) => (
+                <Dropdown.Item key={option.value} {...option} />
+              ))}
+            </Dropdown.Menu>
+          </Dropdown.Menu>
+        </Dropdown>
             <Button
               onClick={this.createWorkflow}
               floated="right"  

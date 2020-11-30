@@ -9,12 +9,11 @@ import WorkFlows from "./work-flows/work-flows";
 
 
 function App({currentUser}) {
-  console.log(currentUser);
-  
+  // console.log(currentUser);
   return (
     <div className="App">
-    <AppHeader currentUser={currentUser} primaryColor="purple"/>
-      <WorkFlows/>
+      <AppHeader currentUser={currentUser} primaryColor="purple"/>
+      <WorkFlows />
     </div>
   );
 }
