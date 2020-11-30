@@ -56,3 +56,6 @@ body,
 .mt25{
   margin-bottom: 25px;
 }
+.ui.search.customSearch> .ui.input > input{
+  width:400px;
+}

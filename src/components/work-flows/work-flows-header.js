@@ -14,14 +14,20 @@ const source = _.times(5, () => ({
 
 const tagOptions = [
   {
+    key: 'All',
+    text: 'ALL',
+    value: '-1',
+    label: { color: 'orange', empty: true, circular: true },
+  },
+  {
     key: 'Pending',
-    text: 'Pending',
+    text: 'PENDING',
     value: '1',
     label: { color: 'grey', empty: true, circular: true },
   },
   {
     key: 'Completed',
-    text: 'Completed',
+    text: 'COMPLETED',
     value: '2',
     label: { color: 'green', empty: true, circular: true },
   }
@@ -66,8 +72,9 @@ class WorkFlowsHeader extends React.Component {
           <Grid.Row style={{height:"30px", margin: 0 }}>
 
           <Search
-          floated ="left"
-          style={{float: "left", paddingRight:"10px"}}
+            className="customSearch"
+            floated ="left"
+            style={{ float: "left", paddingRight:"10px"}}
             input={{placeholder:'Search Workflows', icon: 'search', iconPosition: 'left' }}
             loading={isLoading}
             onResultSelect={this.handleResultSelect}

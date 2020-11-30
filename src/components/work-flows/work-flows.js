@@ -23,6 +23,11 @@ class WorkFlows extends React.Component {
     console.log(this.state.userID);
     this.addListeners();
   }
+
+  componentWillUnmount() {
+    this.removeListeners();
+  }
+
   addListeners = () => {
     let loadedWorkFlows = [];//.orderByChild("createdBy").equalTo(this.state.userID)
     this.state.workFlowsRef.orderByChild("createdBy").equalTo(this.state.userID).on("child_added", (snap) => {
@@ -30,6 +35,10 @@ class WorkFlows extends React.Component {
       loadedWorkFlows.push(snap.val());
       this.setState({ workFlows: loadedWorkFlows });
     });
+  };
+
+  removeListeners = () => {
+    this.state.workFlowsRef.off();
   };
 
   displayWorkFlows = flows =>
