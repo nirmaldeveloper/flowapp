@@ -33,7 +33,7 @@ class AppHeader extends React.Component {
             (<Button
               onClick={this.logOut}
               floated="right"  
-              color="teal"
+              color="white"
                 size="small">
                 Logout
               </Button>

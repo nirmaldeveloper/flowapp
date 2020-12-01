@@ -20,13 +20,10 @@ function App({currentUser}) {
     <div className="App">
       <AppHeader currentUser={currentUser} primaryColor="purple"/>
     <Router>
-      <Route path="/" handler={App}>
       <Switch>
+        <Route exact path="/workflow/:id" component={WorkFlow} />
         <Route exact path="/" component={WorkFlows} />
-        <Route path="/workflow/:id" component={WorkFlow} />
-        {/* <Redirect exact from="/" to={WorkFlows} /> */}
       </Switch>
-      </Route>
     </Router>
     </div>
   );
