@@ -47,18 +47,16 @@ class WorkFlows extends React.Component {
   flows.length > 0 &&
   flows.map(flow => (
         <Grid.Column width={4} key={flow.id} >
-          <Form onSubmit={this.handleSubmit} size="large">
             <Segment style={{height:"140px"}} stacked>
             <Grid.Row>
             <Button floated="right" color="red" style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='trash alternate outline' />
-            <span style={{width: "100%",float: "left",paddingTop: "10px",border: "1px grey solid",marginBottom: "25px", display:"flex"}}>{flow.name}</span> 
+            <Segment><span style={{cursor:"pointer", display:"flex"}}>{flow.name}</span> </Segment>
             </Grid.Row>
             <Grid.Row style={{marginTop:"20px",height:"25px"}}>
             <span floated="left" style={{float:"left",marginLeft:"4px"}}>{flow.status==1 ? 'PENDING': 'COMPLETED'}</span> 
             <Button floated="right" color={flow.status==2?"green":"grey"} circular icon='check' />
             </Grid.Row>
             </Segment>
-            </Form>
          </Grid.Column>
   ));
 
