@@ -50,7 +50,7 @@ class WorkFlows extends React.Component {
             <Segment style={{height:"140px"}} stacked>
             <Grid.Row>
             <Button floated="right" color="red" style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='trash alternate outline' />
-            <Segment><span style={{cursor:"pointer", display:"flex"}}>{flow.name}</span> </Segment>
+            <Link to={`/workflow/${flow.id}`}><Segment><span style={{cursor:"pointer", display:"flex"}}>{flow.name}</span> </Segment></Link>
             </Grid.Row>
             <Grid.Row style={{marginTop:"20px",height:"25px"}}>
             <span floated="left" style={{float:"left",marginLeft:"4px"}}>{flow.status==1 ? 'PENDING': 'COMPLETED'}</span> 

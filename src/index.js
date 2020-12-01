@@ -8,6 +8,7 @@ import Spinner from "./Spinner";
 import registerServiceWorker from "./registerServiceWorker";
 import reportWebVitals from './reportWebVitals';
 import firebase from "./firebase";
+import WorkFlow from "./components/work-flows/work-flow";
 
 import "semantic-ui-css/semantic.min.css";
 

@@ -17,7 +17,7 @@ class WorkFlow extends React.Component {
   };
   render() {
     const { primaryColor } = this.props;
-    const pathname = window.location.pathname;
+    const id = window.location.pathname.split("/")[1];
     return (
     <div>
         <WorkFlowHeader/>
