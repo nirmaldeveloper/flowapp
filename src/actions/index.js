@@ -15,3 +15,24 @@ export const clearUser = () => {
     type: actionTypes.CLEAR_USER
   };
 };
+
+/* Workflow Actions */
+export const setCurrentWorkFlow = channel => {
+  return {
+    type: actionTypes.SET_CURRENT_WORKFLOW,
+    payload: {
+      currentWorkFlow: workflow
+    }
+  };
+};
+
+/* Colors Actions */
+export const setColors = (primaryColor, secondaryColor) => {
+  return {
+    type: actionTypes.SET_COLORS,
+    payload: {
+      primaryColor,
+      secondaryColor
+    }
+  };
+};
