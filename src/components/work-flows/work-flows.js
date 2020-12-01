@@ -15,6 +15,7 @@ import WorkFlowsHeader from "./work-flows-header";
 
 class WorkFlows extends React.Component {
   state = {
+    workFlowName:"",
     userID:this.props.currentUser.uid,
     workFlows:[],
     workFlowsRef: firebase.database().ref("workFlows"),
@@ -50,7 +51,7 @@ class WorkFlows extends React.Component {
             <Segment style={{height:"140px"}} stacked>
             <Grid.Row>
             <Button floated="right" color="red" style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='trash alternate outline' />
-            <span style={{width: "100%",float: "left",paddingTop: "10px",border: "2px grey solid",marginBottom: "25px"}}>{flow.name}</span> 
+            <span style={{width: "100%",float: "left",paddingTop: "10px",border: "1px grey solid",marginBottom: "25px", display:"flex"}}>{flow.name}</span> 
             </Grid.Row>
             <Grid.Row style={{marginTop:"20px",height:"25px"}}>
             <span floated="left" style={{float:"left",marginLeft:"4px"}}>{flow.status==1 ? 'PENDING': 'COMPLETED'}</span> 
@@ -61,15 +62,48 @@ class WorkFlows extends React.Component {
          </Grid.Column>
   ));
 
+  handleChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
   openModal = () => this.setState({ modal: true });
 
   closeModal = () => this.setState({ modal: false });
+  
+  addWorkFlow = () => {
+    const { workFlowsRef,workFlowName,userID } = this.state;
+
+    const key = workFlowsRef.push().key;
+
+    const newWorkFlow = {
+      id: key,
+      name: workFlowName,
+      status: 1,
+      createdBy: userID
+    };
+
+    workFlowsRef
+      .child(key)
+      .update(newWorkFlow)
+      .then(() => {
+        this.setState({ workFlowName: ""});
+        this.closeModal();
+        console.log("workFlow added");
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+
+  isFormValid = ({ workFlowName }) => workFlowName;
+  
   handleSubmit = event =>{
     event.preventDefault();
-  // if (this.isFormValid(this.state)) {
-  //   this.addChannel();
-  // }
+    if (this.isFormValid(this.state)) {
+      this.addWorkFlow();
+    }
   }
+
   render() {
     const pathname = window.location.pathname;
     const{workFlows, modal} = this.state;
