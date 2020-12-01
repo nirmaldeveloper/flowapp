@@ -46,7 +46,7 @@ class WorkFlows extends React.Component {
   displayWorkFlows = flows =>
   flows.length > 0 &&
   flows.map(flow => (
-        <Grid.Column key={flow.id} style={{ width: "350px", maxHeight:"500px" , marginTop:"50px",marginLeft:"15px", marginRight:"20px"}}>
+        <Grid.Column width={4} key={flow.id} style={{ minWidth:"350px",width: "350px", maxHeight:"500px" , marginTop:"50px",marginLeft:"15px", marginRight:"20px"}}>
           <Form onSubmit={this.handleSubmit} size="large">
             <Segment style={{height:"140px"}} stacked>
             <Grid.Row>
@@ -110,9 +110,9 @@ class WorkFlows extends React.Component {
     return (
     <div>
         <WorkFlowsHeader openWorkFlowModal={this.openModal}/>
-        <div style={{display:"flex"}}>
+        <Grid columns={3}>
            {this.displayWorkFlows(workFlows)}
-         </div>
+         </Grid>
          <Modal basic open={modal} onClose={this.closeModal}>
           <Modal.Header>Add a WorkFlow</Modal.Header>
           <Modal.Content>
