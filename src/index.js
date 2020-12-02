@@ -8,8 +8,7 @@ import Spinner from "./Spinner";
 import registerServiceWorker from "./registerServiceWorker";
 import reportWebVitals from './reportWebVitals';
 import firebase from "./firebase";
-import WorkFlow from "./components/work-flows/work-flow";
-
+import { SnackbarProvider } from "notistack";
 import "semantic-ui-css/semantic.min.css";
 
 import {
@@ -46,9 +45,11 @@ class Root extends React.Component {
       <Spinner />
     ) : (
       <Switch>
+        <SnackbarProvider maxSnack={3}>
         <Route exact path="/" component={App} />
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
+        </SnackbarProvider>
       </Switch>
     );
   }

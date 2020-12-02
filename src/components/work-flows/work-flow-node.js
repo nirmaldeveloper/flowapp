@@ -20,7 +20,7 @@ class WorkFlowNode extends React.Component {
     const pathname = window.location.pathname;
     
     return (
-      <Grid.Column key={node.id} style={{marginBottom:"20px"}} >
+      <Grid.Column id={node.id} key={node.id} style={{marginBottom:"20px"}} >
       <Segment style={{height:"350px"}} stacked>
       <Grid.Row>
       <Button onClick={()=>saveNodeStatus(node.id)} floated="right" color={node.status==1?"grey":node.status==2?"blue":"green"} style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='check' />

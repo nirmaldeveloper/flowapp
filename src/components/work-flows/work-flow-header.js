@@ -9,19 +9,20 @@ class WorkFlowHeader extends React.Component {
   state={
     user:this.props.currentUser,
     title:this.props.title,
-    addNode: this.props.addNode
   }
   
   render() {
     const { primaryColor } = "#ffffff";
     const pathname = window.location.pathname;
-    const {addNode,title} = this.state;
+    const {title} = this.state;
+    const {addNode,deleteNode} = this.props;
+
     return (
       <Grid style={{ background: primaryColor }}>
       <Grid.Column>
         <Segment stacked>
         <Grid.Row style={{height:"30px", margin: 0 }}>
-        <Input floated="left" value={title}></Input>
+        <Input style={{float:"left", paddingLeft:"50px", width:"400px"}} floated="left" value={title}></Input>
 
           <Button
             onClick={this.saveWorkFlow}
@@ -41,7 +42,7 @@ class WorkFlowHeader extends React.Component {
             </Button>
             <Button
             style={{marginRight:"10px"}}
-            onClick={this.deleteWorkFlow}
+            onClick={deleteNode}
             floated="right"  
             color="red"
               size="small">

@@ -12,6 +12,7 @@ import { connect } from "react-redux";
 import WorkFlow from "./work-flow";
 import WorkFlowsHeader from "./work-flows-header";
 import {setCurrentWorkFlow} from "../../actions/index";
+import { withSnackbar } from 'notistack';
 
 
 class WorkFlows extends React.Component {
@@ -20,6 +21,7 @@ class WorkFlows extends React.Component {
     userID:this.props.currentUser.uid,
     workFlows:[],
     workFlowsRef: firebase.database().ref("workFlows"),
+    workFlowNodesRef: firebase.database().ref("workFlowNodes"),
     modal: false,
     searchTerm: "",
     searchLoading: false,
@@ -52,7 +54,18 @@ console.log(id);
   }
 
   deleteWorkFlow=id=>{
-console.log(id);
+    console.log(id);
+    const workFlowRef = this.state.workFlowsRef;
+    const nodesRef = this.state.workFlowNodesRef;
+    nodesRef.child(id).remove().then(()=>{
+      const wf = this.state.workFlows.filter(x=> x.id != id);
+      this.setState({workFlows : wf});
+      this.props.enqueueSnackbar('Successfully deleted the workflow.');
+      workFlowRef.child(id).remove();
+    }).catch(err => {
+      this.props.enqueueSnackbar(err);
+      console.error(err);
+    });
   }
 
   changeWorkFlow = workFlow=>{
@@ -214,4 +227,4 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps,{setCurrentWorkFlow})(WorkFlows);
+export default connect(mapStateToProps,{setCurrentWorkFlow})(withSnackbar(WorkFlows));

@@ -5,15 +5,16 @@ import { faTrash, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { Form, Segment, Grid, Header, Icon, Dropdown, Image, Modal, Input, Button } from "semantic-ui-react";
 import firebase from "../../firebase";
 import { connect } from "react-redux";
-
+import LeaderLine from "react-leader-line";
 import WorkFlowHeader from "./work-flow-header";
 import WorkFlowNode from "./work-flow-node";
+import { withSnackbar } from 'notistack';
 
 class WorkFlow extends React.Component {
   state = {
     name: this.props.currentWorkFlow.name,
     status: 1,
-    id:null,
+    id:this.props.currentWorkFlow.id,
     workFlowNodesRef: firebase.database().ref("workFlowNodes"),
     workFlowNodes: [],
     workFlowNodesLoading: true,
@@ -33,11 +34,24 @@ class WorkFlow extends React.Component {
     console.log(workFlowId);
     ref.child(workFlowId).on("child_added", snap => {
       loadedNodes.push(snap.val());
-
+      loadedNodes[loadedNodes.length -1].key = snap.key;
+      console.log(snap.key);
       this.setState({
         workFlowNodes: loadedNodes,
         workFlowNodesLoading: false
       });
+//     if(loadedNodes.length > 0)
+// {
+//   loadedNodes.forEach(function(node, index){
+//    if(index < loadedNodes.length -1){
+//      let start = document.getElementById(loadedNodes[index].id);
+//      let end = document.getElementById(loadedNodes[index+1].id);
+//      if(start && end){
+//        new LeaderLine(start,end);
+//       }
+//     }
+//  }); 
+// }
     });
   }
   createNode = (fileUrl = null) => {
@@ -83,10 +97,28 @@ class WorkFlow extends React.Component {
   saveNodeStatus = nodeId=>{
      console.log(nodeId);
   }
+  deleteNode = ()=>{
+    if(this.state.workFlowNodes.length > 0){
+    const nodesRef = this.state.workFlowNodesRef;
+    let lastNode = this.state.workFlowNodes.pop();
+    console.log(this.state.id);
+    console.log(lastNode.key);
+    //child(this.state.id).
+    nodesRef.child(this.state.id).child(lastNode.key).remove().then(()=>{
+      const wf = this.state.workFlowNodes.filter(x=> x.id != lastNode.id);
+      this.setState({workFlowNodes : wf});
+      //this.setState({workFlowNodes : wf});
+      this.props.enqueueSnackbar('Successfully deleted node from workflow.');
+    }).catch(err => {
+      this.props.enqueueSnackbar(err);
+      console.error(err);
+    });
+  }
+}
   displayWorkFlowNodes = nodes =>
   nodes.length > 0 &&
   nodes.map(node => (
-    <WorkFlowNode key={node.id} saveNodeStatus={this.saveNodeStatus} workFlowNode={node}/>
+    <WorkFlowNode key={node.key} saveNodeStatus={this.saveNodeStatus} workFlowNode={node}/>
   ));
   render() {
     const { primaryColor } = this.props;
@@ -96,11 +128,10 @@ class WorkFlow extends React.Component {
 
     return (
     <div>
-        <WorkFlowHeader title={name} addNode={this.addNode}/>
+        <WorkFlowHeader deleteNode={this.deleteNode} title={name} addNode={this.addNode}/>
         <Grid className="nodes" columns={4} style={{margin:"1.5rem"}}>
            {this.displayWorkFlowNodes(workFlowNodes)}
          </Grid>
-        
     </div>
         );
     }
@@ -110,4 +141,4 @@ const mapStateToProps = state => ({
   currentUser: state.user.currentUser,
   currentWorkFlow: state.workflow.currentWorkFlow
 });
-export default connect(mapStateToProps)(WorkFlow);
+export default connect(mapStateToProps)(withSnackbar(WorkFlow));
