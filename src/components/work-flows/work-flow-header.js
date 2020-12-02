@@ -8,18 +8,21 @@ import firebase from "../../firebase";
 class WorkFlowHeader extends React.Component {
   state={
     user:this.props.currentUser,
+    title:this.props.title,
     addNode: this.props.addNode
   }
   
   render() {
     const { primaryColor } = "#ffffff";
     const pathname = window.location.pathname;
-    const {addNode} = this.state;
+    const {addNode,title} = this.state;
     return (
       <Grid style={{ background: primaryColor }}>
       <Grid.Column>
         <Segment stacked>
         <Grid.Row style={{height:"30px", margin: 0 }}>
+        <Input floated="left" value={title}></Input>
+
           <Button
             onClick={this.saveWorkFlow}
             floated="right"  

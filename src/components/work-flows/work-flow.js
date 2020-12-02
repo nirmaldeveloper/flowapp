@@ -11,7 +11,7 @@ import WorkFlowNode from "./work-flow-node";
 
 class WorkFlow extends React.Component {
   state = {
-    name: "",
+    name: this.props.currentWorkFlow.name,
     status: 1,
     id:null,
     workFlowNodesRef: firebase.database().ref("workFlowNodes"),
@@ -90,13 +90,13 @@ class WorkFlow extends React.Component {
   ));
   render() {
     const { primaryColor } = this.props;
-    const{workFlowNodes} =this.state;
+    const{workFlowNodes,name} =this.state;
     // const id = window.location.pathname.split("/")[1];
     // this.setState({ id: id });
 
     return (
     <div>
-        <WorkFlowHeader addNode={this.addNode}/>
+        <WorkFlowHeader title={name} addNode={this.addNode}/>
         <Grid className="nodes" columns={4} style={{margin:"1.5rem"}}>
            {this.displayWorkFlowNodes(workFlowNodes)}
          </Grid>
@@ -108,5 +108,6 @@ class WorkFlow extends React.Component {
 
 const mapStateToProps = state => ({
   currentUser: state.user.currentUser,
+  currentWorkFlow: state.workflow.currentWorkFlow
 });
 export default connect(mapStateToProps)(WorkFlow);

@@ -11,6 +11,7 @@ import firebase from "../../firebase";
 import { connect } from "react-redux";
 import WorkFlow from "./work-flow";
 import WorkFlowsHeader from "./work-flows-header";
+import {setCurrentWorkFlow} from "../../actions/index";
 
 
 class WorkFlows extends React.Component {
@@ -37,7 +38,6 @@ class WorkFlows extends React.Component {
   addListeners = () => {
     let loadedWorkFlows = [];//.orderByChild("createdBy").equalTo(this.state.userID)
     this.state.workFlowsRef.orderByChild("createdBy").equalTo(this.state.userID).on("child_added", (snap) => {
-      debugger;
       loadedWorkFlows.push(snap.val());
       this.setState({ workFlows: loadedWorkFlows });
     });
@@ -55,6 +55,10 @@ console.log(id);
 console.log(id);
   }
 
+  changeWorkFlow = workFlow=>{
+    this.props.setCurrentWorkFlow(workFlow);
+  }
+
   displayWorkFlows = flows =>
   flows.length > 0 &&
   flows.map(flow => (
@@ -62,7 +66,7 @@ console.log(id);
             <Segment style={{height:"140px"}} stacked>
             <Grid.Row>
             <Button floated="right" color="red" onClick={()=>this.deleteWorkFlow(flow.id)} style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='trash alternate outline' />
-            <Link to={`/workflow/${flow.id}`}><Segment><span style={{cursor:"pointer", display:"flex"}}>{flow.name}</span> </Segment></Link>
+            <Link onClick={()=>this.changeWorkFlow(flow)} to={`/workflow/${flow.id}`}><Segment><span style={{cursor:"pointer", display:"flex"}}>{flow.name}</span> </Segment></Link>
             </Grid.Row>
             <Grid.Row style={{marginTop:"20px",height:"25px"}}>
             <span floated="left" style={{float:"left",marginLeft:"4px"}}>{flow.status==1 ? 'PENDING': 'COMPLETED'}</span> 
@@ -208,4 +212,6 @@ console.log(id);
 const mapStateToProps = state => ({
   currentUser: state.user.currentUser,
 });
-export default connect(mapStateToProps)(WorkFlows);
+
+
+export default connect(mapStateToProps,{setCurrentWorkFlow})(WorkFlows);

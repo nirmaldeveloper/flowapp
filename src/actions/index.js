@@ -17,7 +17,7 @@ export const clearUser = () => {
 };
 
 /* Workflow Actions */
-export const setCurrentWorkFlow = workflow => {
+export const setCurrentWorkFlow = (workflow) => {
   return {
     type: actionTypes.SET_CURRENT_WORKFLOW,
     payload: {

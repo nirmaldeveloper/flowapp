@@ -23,7 +23,7 @@ import { createStore } from "redux";
 import { Provider, connect } from "react-redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-import { setUser, clearUser } from "./actions";
+import { setUser, clearUser,setCurrentWorkFlow } from "./actions";
 import rootReducer from "./reducers";
 
 const store = createStore(rootReducer, composeWithDevTools());
@@ -56,13 +56,14 @@ class Root extends React.Component {
 
 const mapStateFromProps = state => ({
   isLoading: state.user.isLoading,
-  currentUser:state.user
+  currentUser:state.user,
+  currentWorkFlow: state.workflow.currentWorkFlow
 });
 
 const RootWithAuth = withRouter(
   connect(
     mapStateFromProps,
-    { setUser, clearUser }
+    { setUser, clearUser,setCurrentWorkFlow }
   )(Root)
 );
 
