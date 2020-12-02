@@ -8,13 +8,15 @@ import firebase from "../../firebase";
 class WorkFlowHeader extends React.Component {
   state={
     user:this.props.currentUser,
-    title:this.props.title,
+    workFlowTitle:this.props.title,
   }
-  
+  handleChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  }
   render() {
     const { primaryColor } = "#ffffff";
     const pathname = window.location.pathname;
-    const {title} = this.state;
+    const {workFlowTitle} = this.state;
     const {addNode,deleteNode,shuffleNodes,isLoading,currentAction} = this.props;
 
     return (
@@ -22,7 +24,7 @@ class WorkFlowHeader extends React.Component {
       <Grid.Column>
         <Segment stacked>
         <Grid.Row style={{height:"30px", margin: 0 }}>
-        <Input style={{float:"left", paddingLeft:"50px", width:"400px"}} floated="left" value={title}></Input>
+        <Input style={{float:"left", paddingLeft:"50px", width:"400px"}} name="workFlowTitle" floated="left" value={workFlowTitle} onChange={this.handleChange}></Input>
 
           <Button
             disabled={isLoading && currentAction === "Save"}

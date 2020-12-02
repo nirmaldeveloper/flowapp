@@ -19,7 +19,8 @@ class WorkFlow extends React.Component {
     workFlowNodes: [],
     workFlowNodesLoading: true,
     errors:[],
-    currentNode:"",
+    newNode:"",
+    currentNodeId:"",
     currentAction:"",
     isLoading:false
   };
@@ -73,15 +74,14 @@ class WorkFlow extends React.Component {
     const ref = this.state.workFlowNodesRef;
     const workFlowID = this.state.id;
     this.setState({isLoading:true,currentAction:"Adding Node"});
-    // this.setState({currentNode: });
-    const currentNode = this.createNode();//this.state.currentNode;
-    if (currentNode) {
+    const newNode = this.createNode();
+    if (newNode) {
       this.setState({ loading: true });
       this.setState({isLoading:true,currentAction:"Adding Node"});
 
       ref.child(workFlowID)
         .push()
-        .set(currentNode)
+        .set(newNode)
         .then(() => {
           this.setState({isLoading:false,currentAction:""});
           this.setState({ loading: false, node: "", errors: [] });
@@ -104,8 +104,20 @@ class WorkFlow extends React.Component {
       });
     }
   };
-  saveNodeStatus = nodeId=>{
-     console.log(nodeId);
+  saveNodeStatus = node=>{
+     console.log(node.status);
+     this.setState({isLoading:true,currentAction:"Saving Node", currentNodeId:node.id});
+     const nodesRef = this.state.workFlowNodesRef;
+     node.status = node.status === 2 ? 0 : node.status +1;
+     nodesRef.child(this.state.id).child(node.key).update({status:node.status}).then(()=>{
+      this.props.enqueueSnackbar('Successfully update node status.');
+     this.setState({isLoading:false,currentAction:"", currentNodeId:""});
+
+
+     }).catch(err=>{
+     this.setState({isLoading:false,currentAction:"", currentNodeId:""});
+      this.props.enqueueSnackbar('Failed to update node status.');
+     });
   }
   deleteNode = ()=>{
     if(this.state.workFlowNodes.length > 0){
@@ -130,18 +142,32 @@ class WorkFlow extends React.Component {
     });
   }
 }
+// useEffect = () => {
+//   this.shuffleNodes()
+// }
+
 shuffleNodes = () =>{
-  this.setState({isLoading:true,currentAction:"Shuffling Node"});
-  this.setState({isLoading:false,currentAction:""});
+  this.setState({isLoading:true,currentAction:"Shuffling Nodes"});
+  let loadedNodes = this.state.workFlowNodes;
+  for (let i = loadedNodes.length-1; i > 0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    const temp = loadedNodes[i];
+    loadedNodes[i] = loadedNodes[j];
+    loadedNodes[i] = temp;
+  }
+  for(let i=0;i<loadedNodes.length;i++){
+    loadedNodes[i].order = i+1;
+  }
+  this.setState({isLoading:false,currentAction:"",workFlowNodes:loadedNodes});
 }
   displayWorkFlowNodes = nodes =>
   nodes.length > 0 &&
   nodes.map(node => (
-    <WorkFlowNode key={node.key} saveNodeStatus={this.saveNodeStatus} workFlowNode={node}/>
+    <WorkFlowNode key={node.key} isLoading={this.state.isLoading} currentAction={this.state.currentAction} currentNodeId={this.state.currentNodeId} saveNodeStatus={this.saveNodeStatus} workFlowNode={node}/>
   ));
   render() {
     const { primaryColor } = this.props;
-    const{workFlowNodes,name,currentAction,isLoading} =this.state;
+    const{workFlowNodes,name,currentAction,isLoading,currentNodeId} =this.state;
     // const id = window.location.pathname.split("/")[1];
     // this.setState({ id: id });
 
