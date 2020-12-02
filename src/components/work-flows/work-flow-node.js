@@ -20,14 +20,19 @@ class WorkFlowNode extends React.Component {
     const pathname = window.location.pathname;
     
     return (
-      <Grid.Column key={node.id} >
-      <Segment style={{height:"140px"}} stacked>
+      <Grid.Column key={node.id} style={{marginBottom:"20px"}} >
+      <Segment style={{height:"350px"}} stacked>
       <Grid.Row>
       <Button onClick={()=>saveNodeStatus(node.id)} floated="right" color={node.status==1?"grey":node.status==2?"blue":"green"} style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='check' />
       <Input value={node.title}></Input>
       </Grid.Row>
       <Grid.Row style={{marginTop:"20px",height:"25px"}}>
-      <TextArea value={node.notes}></TextArea>
+      <TextArea style={{
+        height: "250px",
+        width: "180px",
+        float: "left",
+        marginLeft: "30px"
+      }} value={node.notes}></TextArea>
       </Grid.Row>
       </Segment>
    </Grid.Column>

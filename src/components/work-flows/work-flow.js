@@ -33,7 +33,7 @@ class WorkFlow extends React.Component {
     console.log(workFlowId);
     ref.child(workFlowId).on("child_added", snap => {
       loadedNodes.push(snap.val());
-      console.log(snap.val());
+
       this.setState({
         workFlowNodes: loadedNodes,
         workFlowNodesLoading: false
@@ -41,7 +41,10 @@ class WorkFlow extends React.Component {
     });
   }
   createNode = (fileUrl = null) => {
+    const key = this.state.workFlowNodesRef.push().key;
+
     const node = {
+      id:key,
       timestamp: firebase.database.ServerValue.TIMESTAMP,
       title: "Enter Title",
       status:1,
@@ -83,7 +86,7 @@ class WorkFlow extends React.Component {
   displayWorkFlowNodes = nodes =>
   nodes.length > 0 &&
   nodes.map(node => (
-    <WorkFlowNode key={node.timestamp} saveNodeStatus={this.saveNodeStatus} workFlowNode={node}/>
+    <WorkFlowNode key={node.id} saveNodeStatus={this.saveNodeStatus} workFlowNode={node}/>
   ));
   render() {
     const { primaryColor } = this.props;
@@ -94,7 +97,7 @@ class WorkFlow extends React.Component {
     return (
     <div>
         <WorkFlowHeader addNode={this.addNode}/>
-        <Grid columns={4} style={{margin:"1.5rem"}}>
+        <Grid className="nodes" columns={4} style={{margin:"1.5rem"}}>
            {this.displayWorkFlowNodes(workFlowNodes)}
          </Grid>
         

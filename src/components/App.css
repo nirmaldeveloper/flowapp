@@ -62,3 +62,35 @@ body,
 .results.transition.visible{
   display: none !important;
 }
+
+.ui.four.column.grid.nodes {
+  display: flex;
+  list-style: none;
+}
+.ui.four.column.grid.nodes > div {
+  padding: 10px 25px;
+  /* border: 1px solid black; */
+  margin: 0 25px;
+  position: relative;
+}
+.ui.four.column.grid.nodes > div:not(:last-child):after {
+  content: '';
+  height: 1px;
+  background: black;
+  width: 90px;
+  position: absolute;
+  right: -65px;
+  top: 50%;
+}
+.ui.four.column.grid.nodes > div:not(:last-child):before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: 50%;
+  border-style: solid;
+  border-width: 7px 0 7px 20px;
+  border-color: transparent transparent transparent black;
+  right: -75px;
+  transform: translateY(-50%);
+}
