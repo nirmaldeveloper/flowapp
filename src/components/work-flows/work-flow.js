@@ -122,7 +122,7 @@ class WorkFlow extends React.Component {
      console.log(node.status);
      this.setState({isLoading:true,currentAction:"Saving Node", currentNodeId:node.id});
      const nodesRef = this.state.workFlowNodesRef;
-     node.status = node.status === 2 ? 0 : node.status +1;
+     node.status = node.status === 3 ? 1 : node.status +1;
      nodesRef.child(this.state.id).child(node.key).update({status:node.status}).then(()=>{
       this.props.enqueueSnackbar('Successfully update node status.');
      this.setState({isLoading:false,currentAction:"", currentNodeId:""});

@@ -52,11 +52,49 @@ class WorkFlows extends React.Component {
     this.state.workFlowsRef.off();
   };
 
-  updateWorkFlowStatus=id=>{
-    this.setState({isLoading:true,currentWorkFlowAction:"Updating Node", currentWorkFlowId:id});
+  updateWorkFlowStatus=(workFlow)=>{
+    var self = this;
+    this.setState({isLoading:true,currentWorkFlowAction:"Updating Node", currentWorkFlowId:workFlow.id});
+    if(workFlow.status == 2){
+      const ref = this.state.workFlowsRef;
+      ref.child(workFlow.id).update({status:1}).then(()=>{
+        workFlow.status = 1;
+        this.props.enqueueSnackbar('Successfully updated the WorkFlow Status!!');
+        this.setState({isLoading:false,currentWorkFlowAction:"", currentWorkFlowId:""});
 
-console.log(id);
-  }
+      }).catch(err=>{
+        this.setState({isLoading:false,currentWorkFlowAction:"", currentWorkFlowId:""});
+        this.props.enqueueSnackbar('Error updating the WorkFlow Status.');
+      });
+    }else{
+        const ref = this.state.workFlowNodesRef;
+        let loadedNodes = [];
+        let addedKeys = [];
+        ref.child(workFlow.id).on("value", function(data){
+        console.log(data.val());
+        let nodeInCompletetatusLen =0;
+        data.forEach(function(record){
+          if(record.val().status !== 3){
+              nodeInCompletetatusLen++;
+          }
+        });
+        if(nodeInCompletetatusLen > 0){
+          self.setState({isLoading:false,currentWorkFlowAction:"", currentWorkFlowId:""});
+          self.props.enqueueSnackbar('Please complete the tasks to change the WorkFlow Status.');
+        }else{
+          const ref = self.state.workFlowsRef;
+          ref.child(workFlow.id).update({status:2}).then(()=>{
+            workFlow.status = 2;
+            self.setState({isLoading:false,currentWorkFlowAction:"", currentWorkFlowId:""});
+            self.props.enqueueSnackbar('Successfully updated the WorkFlow Status!!');
+          }).catch(err=>{
+            self.setState({isLoading:false,currentWorkFlowAction:"", currentWorkFlowId:""});
+            self.props.enqueueSnackbar('Error updating the WorkFlow Status.');
+          });
+        }
+      });
+      }
+    }
 
   deleteWorkFlow=id=>{
     console.log(id);
@@ -95,7 +133,7 @@ console.log(id);
             <Grid.Row style={{marginTop:"20px",height:"25px"}}>
             <span floated="left" style={{float:"left",marginLeft:"4px"}}>{flow.status==1 ? 'PENDING': 'COMPLETED'}</span> 
             <Button disabled={this.state.isLoading && this.state.currentWorkFlowId === flow.id && this.state.currentWorkFlowAction==="Updating Node"}
-            className={(this.state.isLoading && this.state.currentWorkFlowAction==="Updating Node") ? "loading" : ""} onClick={()=>this.updateWorkFlowStatus(flow.id)}  floated="right" color={flow.status==2?"green":"grey"} circular icon='check' />
+            className={(this.state.isLoading && this.state.currentWorkFlowAction==="Updating Node") ? "loading" : ""} onClick={()=>this.updateWorkFlowStatus(flow)}  floated="right" color={flow.status==2?"green":"grey"} circular icon='check' />
             </Grid.Row>
             </Segment>
          </Grid.Column>
