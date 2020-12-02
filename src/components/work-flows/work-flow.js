@@ -226,11 +226,6 @@ shuffleNodes = () =>{
     loadedNodes[j].order = tempOrderj;
 
   }
-  // for(let i=loadedNodes.length-1;i>=0;i--){
-  //   loadedNodes[i].order = i+1;
-  //   console.log(loadedNodes[i].order);
-  // }
-  console.log([...loadedNodes]);
   this.setState({isLoading:false,currentAction:"",workFlowNodes:[...loadedNodes]});
 }
   displayWorkFlowNodes = nodes =>{
