@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSitemap } from '@fortawesome/free-solid-svg-icons';
-import { Form, Segment, Grid, Header, Icon, Dropdown, Image, Modal, Input, Button } from "semantic-ui-react";
+import { Form, Segment, Grid, Header, Icon, Dropdown, Image, Modal, Input, Button, TextArea } from "semantic-ui-react";
 import firebase from "../../firebase";
 import { connect } from "react-redux";
 
@@ -15,21 +15,19 @@ class WorkFlowNode extends React.Component {
     id:null
   };
   render() {
-    const { primaryColor } = this.props;
+    const { primaryColor,saveNodeStatus } = this.props;
     const node = this.props.workFlowNode;
     const pathname = window.location.pathname;
     
     return (
-      
-      <Grid.Column width={4} key={node.id} >
+      <Grid.Column key={node.id} >
       <Segment style={{height:"140px"}} stacked>
       <Grid.Row>
-      <Button floated="right" color="red" style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='trash alternate outline' />
-      <Link to={`/workflow/${node.id}`}><Segment><span style={{cursor:"pointer", display:"flex"}}>{node.name}</span> </Segment></Link>
+      <Button onClick={()=>saveNodeStatus(node.id)} floated="right" color={node.status==1?"grey":node.status==2?"blue":"green"} style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='check' />
+      <Input value={node.title}></Input>
       </Grid.Row>
       <Grid.Row style={{marginTop:"20px",height:"25px"}}>
-      <span floated="left" style={{float:"left",marginLeft:"4px"}}>{node.status==1 ? 'PENDING': 'COMPLETED'}</span> 
-      <Button floated="right" color={node.status==2?"green":"grey"} circular icon='check' />
+      <TextArea value={node.notes}></TextArea>
       </Grid.Row>
       </Segment>
    </Grid.Column>

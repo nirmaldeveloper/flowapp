@@ -7,12 +7,14 @@ import firebase from "../../firebase";
 
 class WorkFlowHeader extends React.Component {
   state={
-    user:this.props.currentUser
+    user:this.props.currentUser,
+    addNode: this.props.addNode
   }
   
   render() {
     const { primaryColor } = "#ffffff";
     const pathname = window.location.pathname;
+    const {addNode} = this.state;
     return (
       <Grid style={{ background: primaryColor }}>
       <Grid.Column>
@@ -27,7 +29,7 @@ class WorkFlowHeader extends React.Component {
             </Button>
             <Button
             style={{marginRight:"10px"}}
-            onClick={this.addNode}
+            onClick={addNode}
             floated="right"  
             color="green"
               size="small">
