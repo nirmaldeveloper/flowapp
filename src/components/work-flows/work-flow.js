@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import LeaderLine from "react-leader-line";
 import WorkFlowHeader from "./work-flow-header";
 import WorkFlowNode from "./work-flow-node";
+import WorkFlowNodeSkeleton from "./work-flow-node-skeleton";
 import { withSnackbar } from 'notistack';
 
 class WorkFlow extends React.Component {
@@ -23,14 +24,21 @@ class WorkFlow extends React.Component {
     newNode:"",
     currentNodeId:"",
     currentAction:"",
-    isLoading:false
+    isLoading:false,
+    unsubscribe:"",
+    input:0
   };
   componentDidMount(){
-    // const{id} = this.state;
     const id = window.location.pathname.split("/")[2];
     this.setState({ id: id });
     this.addListeners(id);
   }
+
+
+  // useEffect(() => {
+  //   //this.shuffleNodes();
+  //   console.log("using effect" + this.state.input);
+  // },[this.state.input]);
 
   componentWillUnmount() {
     this.removeListeners();
@@ -39,7 +47,6 @@ class WorkFlow extends React.Component {
   addListeners = workFlowId =>{
     let loadedNodes = [];
     const ref = this.state.workFlowNodesRef;
-    // console.log(workFlowId);
     let addedKeys = [];
     ref.child(workFlowId).on("child_added", snap => {
       if(addedKeys.indexOf(snap.key) === -1){
@@ -69,6 +76,7 @@ class WorkFlow extends React.Component {
   removeListeners = () => {
     this.state.workFlowNodesRef.off();
     this.state.workFlowsRef.off();
+    // this.state.unsubscribe();
   };
 
   createNode = (fileUrl = null) => {
@@ -122,12 +130,21 @@ class WorkFlow extends React.Component {
      console.log(node.status);
      this.setState({isLoading:true,currentAction:"Saving Node", currentNodeId:node.id});
      const nodesRef = this.state.workFlowNodesRef;
+     const workFlowRef = this.state.workFlowsRef;
      node.status = node.status === 3 ? 1 : node.status +1;
      nodesRef.child(this.state.id).child(node.key).update({status:node.status}).then(()=>{
-      this.props.enqueueSnackbar('Successfully update node status.');
-     this.setState({isLoading:false,currentAction:"", currentNodeId:""});
-
-
+      if(node.status < 3){
+        workFlowRef.child(this.state.id).update({status:1}).then(()=>{
+          this.props.enqueueSnackbar('Successfully saved WorkFlow.');
+          this.setState({isLoading:false,currentAction:"", currentNodeId:""});
+        }).catch(err=>{
+          this.props.enqueueSnackbar('Failed to update node status.');
+          this.setState({isLoading:false,currentAction:"", currentNodeId:""});
+        });
+      }else{
+        this.props.enqueueSnackbar('Successfully saved WorkFlow.');
+        this.setState({isLoading:false,currentAction:"", currentNodeId:""});
+      }
      }).catch(err=>{
      this.setState({isLoading:false,currentAction:"", currentNodeId:""});
       this.props.enqueueSnackbar('Failed to update node status.');
@@ -143,8 +160,6 @@ class WorkFlow extends React.Component {
       const wf = this.state.workFlowNodes.filter(x=> x.id != lastNode.id);
       this.setState({workFlowNodes : wf});
       this.setState({isLoading:false,currentAction:""});
-
-      //this.setState({workFlowNodes : wf});
       this.props.enqueueSnackbar('Successfully deleted node from workflow.');
     }).catch(err => {
       this.setState({isLoading:false,currentAction:""});
@@ -153,9 +168,9 @@ class WorkFlow extends React.Component {
     });
   }
 }
-// useEffect = () => {
-//   this.shuffleNodes()
-// }
+
+
+
 saveWorkFlow = () =>{
   if(this.state.workFlowNodes.length > 0){
   this.setState({isLoading:true,currentAction:"Saving Nodes"});
@@ -173,6 +188,7 @@ saveWorkFlow = () =>{
     }).then(()=>{
       count++;
       if(count === this.state.workFlowNodes.length){
+        // this.state.unsubscribe = 
         workFlowsRef.child(this.state.id).update({name:this.state.name}).then(()=>{
           this.props.enqueueSnackbar('Successfully saved WorkFlow.');
           this.setState({isLoading:false,currentAction:"", currentNodeId:""});
@@ -198,30 +214,43 @@ handleHeaderChange = node=>{
 }
 shuffleNodes = () =>{
   this.setState({isLoading:true,currentAction:"Shuffling Nodes"});
-  let loadedNodes = this.state.workFlowNodes;
+  let loadedNodes = [...this.state.workFlowNodes];
   for (let i = loadedNodes.length-1; i > 0; i--){
     const j = Math.floor(Math.random()*(i+1));
     const temp = loadedNodes[i];
+    const tempOrderi = temp.order;
+    const tempOrderj = loadedNodes[j].order; 
     loadedNodes[i] = loadedNodes[j];
-    loadedNodes[i] = temp;
+    loadedNodes[i].order = tempOrderi;
+    loadedNodes[j] = temp;
+    loadedNodes[j].order = tempOrderj;
+
   }
-  for(let i=0;i<loadedNodes.length;i++){
-    loadedNodes[i].order = i+1;
-  }
-  this.setState({isLoading:false,currentAction:"",workFlowNodes:loadedNodes});
+  // for(let i=loadedNodes.length-1;i>=0;i--){
+  //   loadedNodes[i].order = i+1;
+  //   console.log(loadedNodes[i].order);
+  // }
+  console.log([...loadedNodes]);
+  this.setState({isLoading:false,currentAction:"",workFlowNodes:[...loadedNodes]});
 }
-  displayWorkFlowNodes = nodes =>
-  nodes.length > 0 &&
-  nodes.map(node => (
+  displayWorkFlowNodes = nodes =>{
+  
+  return nodes.length > 0 &&
+    [...nodes]
+    .sort(({ order: previousOrder }, { order: currentOrder }) => previousOrder - currentOrder)
+    .map(node => (this.state.isLoading && this.state.currentAction==="Shuffling Nodes") ? (
+      <WorkFlowNodeSkeleton key={node.order} isLoading={this.state.isLoading} currentAction={this.state.currentAction} currentNodeId={this.state.currentNodeId} handleNodeChange={this.handleNodeChange} saveNodeStatus={this.saveNodeStatus} workFlowNode={node}/>
+    ) : (
     <WorkFlowNode key={node.key} isLoading={this.state.isLoading} currentAction={this.state.currentAction} currentNodeId={this.state.currentNodeId} handleNodeChange={this.handleNodeChange} saveNodeStatus={this.saveNodeStatus} workFlowNode={node}/>
   ));
+}
   render() {
     const { primaryColor } = this.props;
     const{workFlowNodes,name,currentAction,isLoading,currentNodeId} =this.state;
     return (
     <div>
         <WorkFlowHeader handleChange={this.handleHeaderChange} saveWorkFlow={this.saveWorkFlow} isLoading={isLoading} currentAction={currentAction} shuffleNodes={this.shuffleNodes} deleteNode={this.deleteNode} title={name} addNode={this.addNode}/>
-        <Grid className="nodes" columns={4} style={{margin:"1.5rem"}}>
+        <Grid className={(this.state.isLoading && this.state.currentAction==="Shuffling Nodes") ? "":"nodes"} columns={4} style={{margin:"1.5rem"}}>
            {this.displayWorkFlowNodes(workFlowNodes)}
          </Grid>
     </div>

@@ -29,7 +29,8 @@ class WorkFlows extends React.Component {
     filter:-1,
     currentWorkFlowId:"",
     currentWorkFlowAction:"",
-    isLoading:false
+    isLoading:false,
+    unsubscribe:""
   };
   componentDidMount() {
     console.log(this.state.userID);
@@ -49,14 +50,16 @@ class WorkFlows extends React.Component {
   };
 
   removeListeners = () => {
+    this.state.workFlowNodesRef.off();
     this.state.workFlowsRef.off();
+    // this.state.unsubscribe();
   };
 
   updateWorkFlowStatus=(workFlow)=>{
     var self = this;
     this.setState({isLoading:true,currentWorkFlowAction:"Updating Node", currentWorkFlowId:workFlow.id});
     if(workFlow.status == 2){
-      const ref = this.state.workFlowsRef;
+      let ref = this.state.workFlowsRef;
       ref.child(workFlow.id).update({status:1}).then(()=>{
         workFlow.status = 1;
         this.props.enqueueSnackbar('Successfully updated the WorkFlow Status!!');
@@ -67,9 +70,10 @@ class WorkFlows extends React.Component {
         this.props.enqueueSnackbar('Error updating the WorkFlow Status.');
       });
     }else{
-        const ref = this.state.workFlowNodesRef;
+        let ref = this.state.workFlowNodesRef;
         let loadedNodes = [];
         let addedKeys = [];
+        // this.state.unsubscribe = 
         ref.child(workFlow.id).on("value", function(data){
         console.log(data.val());
         let nodeInCompletetatusLen =0;
