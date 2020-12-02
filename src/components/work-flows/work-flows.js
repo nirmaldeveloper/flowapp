@@ -26,7 +26,10 @@ class WorkFlows extends React.Component {
     searchTerm: "",
     searchLoading: false,
     searchResults: [],
-    filter:-1
+    filter:-1,
+    currentWorkFlowId:"",
+    currentWorkFlowAction:"",
+    isLoading:false
   };
   componentDidMount() {
     console.log(this.state.userID);
@@ -50,6 +53,8 @@ class WorkFlows extends React.Component {
   };
 
   updateWorkFlowStatus=id=>{
+    this.setState({isLoading:true,currentWorkFlowAction:"Updating Node", currentWorkFlowId:id});
+
 console.log(id);
   }
 
@@ -57,12 +62,17 @@ console.log(id);
     console.log(id);
     const workFlowRef = this.state.workFlowsRef;
     const nodesRef = this.state.workFlowNodesRef;
+    this.setState({isLoading:true,currentWorkFlowAction:"Deleting Node", currentWorkFlowId:id});
+
     nodesRef.child(id).remove().then(()=>{
       const wf = this.state.workFlows.filter(x=> x.id != id);
       this.setState({workFlows : wf});
       this.props.enqueueSnackbar('Successfully deleted the workflow.');
-      workFlowRef.child(id).remove();
+      workFlowRef.child(id).remove().then(()=>{
+        this.setState({isLoading:false,currentWorkFlowAction:"", currentWorkFlowId:""});
+      });
     }).catch(err => {
+      this.setState({isLoading:false,currentWorkFlowAction:"", currentWorkFlowId:""});
       this.props.enqueueSnackbar(err);
       console.error(err);
     });
@@ -78,12 +88,14 @@ console.log(id);
         <Grid.Column width={4} key={flow.id} >
             <Segment style={{height:"140px"}} stacked>
             <Grid.Row>
-            <Button floated="right" color="red" onClick={()=>this.deleteWorkFlow(flow.id)} style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='trash alternate outline' />
+            <Button floated="right" color="red" disabled={this.state.isLoading && this.state.currentWorkFlowId === flow.id && this.state.currentWorkFlowAction==="Deleting Node"}
+            className={(this.state.isLoading && this.state.currentWorkFlowId === flow.id && this.state.currentWorkFlowAction==="Deleting Node") ? "loading" : ""} onClick={()=>this.deleteWorkFlow(flow.id)} style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='trash alternate outline' />
             <Link onClick={()=>this.changeWorkFlow(flow)} to={`/workflow/${flow.id}`}><Segment><span style={{cursor:"pointer", display:"flex"}}>{flow.name}</span> </Segment></Link>
             </Grid.Row>
             <Grid.Row style={{marginTop:"20px",height:"25px"}}>
             <span floated="left" style={{float:"left",marginLeft:"4px"}}>{flow.status==1 ? 'PENDING': 'COMPLETED'}</span> 
-            <Button onClick={()=>this.updateWorkFlowStatus(flow.id)}  floated="right" color={flow.status==2?"green":"grey"} circular icon='check' />
+            <Button disabled={this.state.isLoading && this.state.currentWorkFlowId === flow.id && this.state.currentWorkFlowAction==="Updating Node"}
+            className={(this.state.isLoading && this.state.currentWorkFlowAction==="Updating Node") ? "loading" : ""} onClick={()=>this.updateWorkFlowStatus(flow.id)}  floated="right" color={flow.status==2?"green":"grey"} circular icon='check' />
             </Grid.Row>
             </Segment>
          </Grid.Column>

@@ -15,7 +15,7 @@ class WorkFlowHeader extends React.Component {
     const { primaryColor } = "#ffffff";
     const pathname = window.location.pathname;
     const {title} = this.state;
-    const {addNode,deleteNode} = this.props;
+    const {addNode,deleteNode,shuffleNodes,isLoading,currentAction} = this.props;
 
     return (
       <Grid style={{ background: primaryColor }}>
@@ -25,13 +25,17 @@ class WorkFlowHeader extends React.Component {
         <Input style={{float:"left", paddingLeft:"50px", width:"400px"}} floated="left" value={title}></Input>
 
           <Button
+            disabled={isLoading && currentAction === "Save"}
+            className={(isLoading && currentAction === "Save") ? "loading" : ""}
             onClick={this.saveWorkFlow}
             floated="right"  
             color="blue"
               size="small">
               Save
             </Button>
-            <Button
+            <Button            
+            disabled={isLoading && currentAction === "Adding Node"}
+            className={(isLoading && currentAction === "Adding Node") ? "loading" : ""}
             style={{marginRight:"10px"}}
             onClick={addNode}
             floated="right"  
@@ -41,6 +45,8 @@ class WorkFlowHeader extends React.Component {
               Add Node
             </Button>
             <Button
+            disabled={isLoading && currentAction === "Deleting Node"}
+            className={(isLoading && currentAction === "Deleting Node") ? "loading" : ""}
             style={{marginRight:"10px"}}
             onClick={deleteNode}
             floated="right"  
@@ -50,8 +56,10 @@ class WorkFlowHeader extends React.Component {
               Delete
             </Button>
             <Button
+            disabled={isLoading && currentAction === "Shuffling Nodes"}
+            className={(isLoading && currentAction === "Shuffling Nodes") ? "loading" : ""}
             style={{marginRight:"10px"}}
-            onClick={this.shuffleNodes}
+            onClick={shuffleNodes}
             floated="right"  
             color="purple"
               size="small">

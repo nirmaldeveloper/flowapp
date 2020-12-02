@@ -19,7 +19,9 @@ class WorkFlow extends React.Component {
     workFlowNodes: [],
     workFlowNodesLoading: true,
     errors:[],
-    currentNode:""
+    currentNode:"",
+    currentAction:"",
+    isLoading:false
   };
   componentDidMount(){
     // const{id} = this.state;
@@ -70,18 +72,24 @@ class WorkFlow extends React.Component {
   addNode = () => {
     const ref = this.state.workFlowNodesRef;
     const workFlowID = this.state.id;
-    this.setState({currentNode: this.createNode()});
-    const currentNode = this.state.currentNode;
+    this.setState({isLoading:true,currentAction:"Adding Node"});
+    // this.setState({currentNode: });
+    const currentNode = this.createNode();//this.state.currentNode;
     if (currentNode) {
       this.setState({ loading: true });
+      this.setState({isLoading:true,currentAction:"Adding Node"});
+
       ref.child(workFlowID)
         .push()
         .set(currentNode)
         .then(() => {
+          this.setState({isLoading:false,currentAction:""});
           this.setState({ loading: false, node: "", errors: [] });
           
         })
         .catch(err => {
+      this.setState({isLoading:false,currentAction:""});
+
           console.error(err);
           this.setState({
             loading: false,
@@ -89,6 +97,8 @@ class WorkFlow extends React.Component {
           });
         });
     } else {
+      this.setState({isLoading:false,currentAction:""});
+
       this.setState({
         errors: this.state.errors.concat({ message: "Add a node details" })
       });
@@ -99,6 +109,8 @@ class WorkFlow extends React.Component {
   }
   deleteNode = ()=>{
     if(this.state.workFlowNodes.length > 0){
+      this.setState({isLoading:true,currentAction:"Deleting Node"});
+
     const nodesRef = this.state.workFlowNodesRef;
     let lastNode = this.state.workFlowNodes.pop();
     console.log(this.state.id);
@@ -107,13 +119,20 @@ class WorkFlow extends React.Component {
     nodesRef.child(this.state.id).child(lastNode.key).remove().then(()=>{
       const wf = this.state.workFlowNodes.filter(x=> x.id != lastNode.id);
       this.setState({workFlowNodes : wf});
+      this.setState({isLoading:false,currentAction:""});
+
       //this.setState({workFlowNodes : wf});
       this.props.enqueueSnackbar('Successfully deleted node from workflow.');
     }).catch(err => {
+      this.setState({isLoading:false,currentAction:""});
       this.props.enqueueSnackbar(err);
       console.error(err);
     });
   }
+}
+shuffleNodes = () =>{
+  this.setState({isLoading:true,currentAction:"Shuffling Node"});
+  this.setState({isLoading:false,currentAction:""});
 }
   displayWorkFlowNodes = nodes =>
   nodes.length > 0 &&
@@ -122,13 +141,13 @@ class WorkFlow extends React.Component {
   ));
   render() {
     const { primaryColor } = this.props;
-    const{workFlowNodes,name} =this.state;
+    const{workFlowNodes,name,currentAction,isLoading} =this.state;
     // const id = window.location.pathname.split("/")[1];
     // this.setState({ id: id });
 
     return (
     <div>
-        <WorkFlowHeader deleteNode={this.deleteNode} title={name} addNode={this.addNode}/>
+        <WorkFlowHeader isLoading={isLoading} currentAction={currentAction} shuffleNodes={this.shuffleNodes} deleteNode={this.deleteNode} title={name} addNode={this.addNode}/>
         <Grid className="nodes" columns={4} style={{margin:"1.5rem"}}>
            {this.displayWorkFlowNodes(workFlowNodes)}
          </Grid>
