@@ -9,15 +9,19 @@ import { connect } from "react-redux";
 
 class WorkFlowNode extends React.Component {
   state = {
-    name: "",
-    status: 1,
-    note:"",
-    id:null,
+    status: this.props.workFlowNode.status,
+    id:this.props.workFlowNode.id,
     title:this.props.workFlowNode.title,
-    notes:this.props.workFlowNode.notes
+    notes:this.props.workFlowNode.notes,
+    order:this.props.workFlowNode.order,
+    key:this.props.workFlowNode.key,
+    timestamp:this.props.workFlowNode.timestamp
   };
   handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
+    event.preventDefault();
+    this.setState({ [event.target.name]: event.target.value
+      },()=>{  this.props.handleNodeChange(this.state);
+    });
   }
   render() {
     const { primaryColor,saveNodeStatus,currentNodeId, currentAction, isLoading } = this.props;

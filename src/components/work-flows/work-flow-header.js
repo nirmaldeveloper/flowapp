@@ -8,28 +8,30 @@ import firebase from "../../firebase";
 class WorkFlowHeader extends React.Component {
   state={
     user:this.props.currentUser,
-    workFlowTitle:this.props.title,
+    title:this.props.title
   }
   handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
+    event.preventDefault();
+    this.setState({ [event.target.name]: event.target.value 
+     },()=> {this.props.handleChange(this.state);
+    });
   }
   render() {
     const { primaryColor } = "#ffffff";
     const pathname = window.location.pathname;
-    const {workFlowTitle} = this.state;
-    const {addNode,deleteNode,shuffleNodes,isLoading,currentAction} = this.props;
+    const {title,addNode,deleteNode,saveWorkFlow,shuffleNodes,isLoading,currentAction} = this.props;
 
     return (
       <Grid style={{ background: primaryColor }}>
       <Grid.Column>
         <Segment stacked>
         <Grid.Row style={{height:"30px", margin: 0 }}>
-        <Input style={{float:"left", paddingLeft:"50px", width:"400px"}} name="workFlowTitle" floated="left" value={workFlowTitle} onChange={this.handleChange}></Input>
+        <Input style={{float:"left", paddingLeft:"50px", width:"400px"}} name="title" floated="left" value={title} onChange={this.handleChange}></Input>
 
           <Button
-            disabled={isLoading && currentAction === "Save"}
-            className={(isLoading && currentAction === "Save") ? "loading" : ""}
-            onClick={this.saveWorkFlow}
+            disabled={isLoading && currentAction === "Saving Nodes"}
+            className={(isLoading && currentAction === "Saving Nodes") ? "loading" : ""}
+            onClick={saveWorkFlow}
             floated="right"  
             color="blue"
               size="small">

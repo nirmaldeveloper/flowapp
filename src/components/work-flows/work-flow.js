@@ -16,6 +16,7 @@ class WorkFlow extends React.Component {
     status: 1,
     id:this.props.currentWorkFlow.id,
     workFlowNodesRef: firebase.database().ref("workFlowNodes"),
+    workFlowsRef: firebase.database().ref("workFlows"),
     workFlowNodes: [],
     workFlowNodesLoading: true,
     errors:[],
@@ -31,18 +32,25 @@ class WorkFlow extends React.Component {
     this.addListeners(id);
   }
 
+  componentWillUnmount() {
+    this.removeListeners();
+  }
+
   addListeners = workFlowId =>{
     let loadedNodes = [];
     const ref = this.state.workFlowNodesRef;
-    console.log(workFlowId);
+    // console.log(workFlowId);
+    let addedKeys = [];
     ref.child(workFlowId).on("child_added", snap => {
-      loadedNodes.push(snap.val());
-      loadedNodes[loadedNodes.length -1].key = snap.key;
-      console.log(snap.key);
-      this.setState({
-        workFlowNodes: loadedNodes,
-        workFlowNodesLoading: false
-      });
+      if(addedKeys.indexOf(snap.key) === -1){
+        addedKeys.push(snap.key);
+        loadedNodes.push(snap.val());
+        loadedNodes[loadedNodes.length -1].key = snap.key;
+        this.setState({
+          workFlowNodes: loadedNodes,
+          workFlowNodesLoading: false
+        });
+    }
 //     if(loadedNodes.length > 0)
 // {
 //   loadedNodes.forEach(function(node, index){
@@ -57,6 +65,12 @@ class WorkFlow extends React.Component {
 // }
     });
   }
+
+  removeListeners = () => {
+    this.state.workFlowNodesRef.off();
+    this.state.workFlowsRef.off();
+  };
+
   createNode = (fileUrl = null) => {
     const key = this.state.workFlowNodesRef.push().key;
 
@@ -125,9 +139,6 @@ class WorkFlow extends React.Component {
 
     const nodesRef = this.state.workFlowNodesRef;
     let lastNode = this.state.workFlowNodes.pop();
-    console.log(this.state.id);
-    console.log(lastNode.key);
-    //child(this.state.id).
     nodesRef.child(this.state.id).child(lastNode.key).remove().then(()=>{
       const wf = this.state.workFlowNodes.filter(x=> x.id != lastNode.id);
       this.setState({workFlowNodes : wf});
@@ -145,7 +156,46 @@ class WorkFlow extends React.Component {
 // useEffect = () => {
 //   this.shuffleNodes()
 // }
-
+saveWorkFlow = () =>{
+  if(this.state.workFlowNodes.length > 0){
+  this.setState({isLoading:true,currentAction:"Saving Nodes"});
+  const nodesRef = this.state.workFlowNodesRef;
+  const workFlowsRef = this.state.workFlowsRef;
+  let count = 0;
+  this.state.workFlowNodes.forEach(element => {
+    nodesRef.child(this.state.id).child(element.key).update({
+      id:element.id,
+      timestamp: element.timestamp,
+      title: element.title,
+      status:element.status,
+      notes:element.notes,
+      order:element.order
+    }).then(()=>{
+      count++;
+      if(count === this.state.workFlowNodes.length){
+        workFlowsRef.child(this.state.id).update({name:this.state.name}).then(()=>{
+          this.props.enqueueSnackbar('Successfully saved WorkFlow.');
+          this.setState({isLoading:false,currentAction:"", currentNodeId:""});
+        }).catch(err=>{
+          this.setState({isLoading:false,currentAction:"", currentNodeId:""});
+          this.props.enqueueSnackbar('Failed to save WorkFlow.');
+      
+        });
+      }
+     }).catch(err=>{
+     this.setState({isLoading:false,currentAction:"", currentNodeId:""});
+      this.props.enqueueSnackbar('Failed to save WorkFlow.');
+     });
+  });
+  }
+}
+handleNodeChange = nodeState =>{
+  const index = this.state.workFlowNodes.findIndex(item => item.id === nodeState.id);
+  this.state.workFlowNodes[index] = nodeState;
+}
+handleHeaderChange = node=>{
+  this.setState({name: node.title});
+}
 shuffleNodes = () =>{
   this.setState({isLoading:true,currentAction:"Shuffling Nodes"});
   let loadedNodes = this.state.workFlowNodes;
@@ -163,17 +213,14 @@ shuffleNodes = () =>{
   displayWorkFlowNodes = nodes =>
   nodes.length > 0 &&
   nodes.map(node => (
-    <WorkFlowNode key={node.key} isLoading={this.state.isLoading} currentAction={this.state.currentAction} currentNodeId={this.state.currentNodeId} saveNodeStatus={this.saveNodeStatus} workFlowNode={node}/>
+    <WorkFlowNode key={node.key} isLoading={this.state.isLoading} currentAction={this.state.currentAction} currentNodeId={this.state.currentNodeId} handleNodeChange={this.handleNodeChange} saveNodeStatus={this.saveNodeStatus} workFlowNode={node}/>
   ));
   render() {
     const { primaryColor } = this.props;
     const{workFlowNodes,name,currentAction,isLoading,currentNodeId} =this.state;
-    // const id = window.location.pathname.split("/")[1];
-    // this.setState({ id: id });
-
     return (
     <div>
-        <WorkFlowHeader isLoading={isLoading} currentAction={currentAction} shuffleNodes={this.shuffleNodes} deleteNode={this.deleteNode} title={name} addNode={this.addNode}/>
+        <WorkFlowHeader handleChange={this.handleHeaderChange} saveWorkFlow={this.saveWorkFlow} isLoading={isLoading} currentAction={currentAction} shuffleNodes={this.shuffleNodes} deleteNode={this.deleteNode} title={name} addNode={this.addNode}/>
         <Grid className="nodes" columns={4} style={{margin:"1.5rem"}}>
            {this.displayWorkFlowNodes(workFlowNodes)}
          </Grid>
