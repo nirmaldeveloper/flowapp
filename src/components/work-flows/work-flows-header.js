@@ -44,7 +44,8 @@ class WorkFlowsHeader extends React.Component {
     searchTerm: this.props.searchTerm,
     searchLoading:this.props.searchLoading,
     searchResults:this.props.searchResults,
-    handleSearchChange: this.props.handleSearchChange
+    handleSearchChange: this.props.handleSearchChange,
+    handleFilterChange:this.props.handleFilterChange
   }
   openModal = () =>{
     this.props.openWorkFlowModal();
@@ -66,13 +67,14 @@ class WorkFlowsHeader extends React.Component {
     event.preventDefault();
 
   }
-  optionSelected = option=>{
-    if(option !== this.state.filterText){
-      this.setState({filterText:option});
+  optionSelected = option =>{
+    if(option.text !== this.state.filterText){
+      this.setState({filterText:option.text});
     }
     else{
       this.setState({filterText:"Filter"});
     }
+    this.state.handleFilterChange(option.value);
   }
   
   render() {
@@ -96,6 +98,9 @@ class WorkFlowsHeader extends React.Component {
             loading={searchLoading}
             //onResultSelect={this.handleResultSelect}
             onSearchChange={(e)=>handleSearchChange(e)}
+            // onSearchChange={(e)=>_.debounce(this.handleSearchChange(e), 500, {
+            //   searchLoading: true,
+            // }).this}
             // results={results}
             // value={searchTerm}
           />
@@ -113,7 +118,7 @@ class WorkFlowsHeader extends React.Component {
             <Dropdown.Header icon='tags' content='Tag Label' /> */}
             <Dropdown.Menu scrolling>
               {tagOptions.map((option) => (
-                <Dropdown.Item  key={option.value} {...option} onClick={()=>this.optionSelected(option.text)}/>
+                <Dropdown.Item  key={option.value} {...option} onClick={()=>this.optionSelected(option)}/>
               ),this)}
             </Dropdown.Menu>
           </Dropdown.Menu>

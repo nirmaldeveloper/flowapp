@@ -23,6 +23,7 @@ class WorkFlows extends React.Component {
     searchTerm: "",
     searchLoading: false,
     searchResults: [],
+    filter:-1
   };
   componentDidMount() {
     console.log(this.state.userID);
@@ -115,6 +116,7 @@ console.log(id);
 
   handleSearchChange = event => {
     // if(event && event.target){
+      console.log(event.target.value);
     this.setState(
       {
         searchTerm: event.target.value,
@@ -128,26 +130,51 @@ console.log(id);
 
   handleSearchWorkFlows = () => {
     const workFlows = [...this.state.workFlows];
+    const searchResults = [...this.state.searchResults];
+    const filter = this.state.filter;
     const regex = new RegExp(this.state.searchTerm, "gi");
-    const searchResults = workFlows.reduce((acc, workFlow) => {
-      if (workFlow.name && workFlow.name.match(regex)) 
+    
+    const searchResultsArr = workFlows.reduce((acc, workFlow) => {
+      if (workFlow.name && workFlow.name.match(regex) && filter > -1 &&  workFlow.status== filter) 
        {
+        acc.push(workFlow);
+      }else if(filter == -1 && workFlow.name && workFlow.name.match(regex)){
         acc.push(workFlow);
       }
       return acc;
     }, []);
-    this.setState({ searchResults });
+    this.setState({ searchResults:searchResultsArr });
+
     setTimeout(() => this.setState({ searchLoading: false }), 1000);
   };
 
+  handleFilterChange = (option) => {
+    const workFlows = [...this.state.workFlows];
+    const searchResults = [...this.state.searchResults];
+    const filter = this.state.filter;
+    const regex = new RegExp(this.state.searchTerm, "gi");
+    
+    const searchResultsArr = workFlows.reduce((acc, workFlow) => {
+      if (workFlow.name && workFlow.name.match(regex) && option > -1 &&  workFlow.status== option) 
+       {
+        acc.push(workFlow);
+      }else if(option == -1 && workFlow.name && workFlow.name.match(regex)){
+        acc.push(workFlow);
+      }
+      return acc;
+    }, []);
+  this.setState({ searchResults:searchResultsArr, filter:option });
+  setTimeout(() => this.setState({ searchLoading: false }), 1000);
+  }
+
   render() {
     const pathname = window.location.pathname;
-    const{workFlows, modal, searchTerm,searchLoading,searchResults} = this.state;
+    const{workFlows, modal, searchTerm,searchLoading,searchResults, filter} = this.state;
     return (
     <div>
-        <WorkFlowsHeader handleSearchChange={this.handleSearchChange} searchTerm={searchTerm} searchLoading={searchLoading} searchResults={searchResults} openWorkFlowModal={this.openModal}/>
+        <WorkFlowsHeader handleFilterChange={this.handleFilterChange} handleSearchChange={this.handleSearchChange} searchTerm={searchTerm} searchLoading={searchLoading} searchResults={searchResults} openWorkFlowModal={this.openModal}/>
         <Grid columns={4} style={{margin:"1.5rem"}}>
-           {searchTerm?this.displayWorkFlows(searchResults):this.displayWorkFlows(workFlows)}
+           {(searchTerm || filter > -1 )?this.displayWorkFlows(searchResults):this.displayWorkFlows(workFlows)}
          </Grid>
          <Modal basic open={modal} onClose={this.closeModal}>
           <Modal.Header>Add a WorkFlow</Modal.Header>
