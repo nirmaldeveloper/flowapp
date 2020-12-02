@@ -39,59 +39,68 @@ class WorkFlowsHeader extends React.Component {
     super(props);
     };
   state={
-    user:this.props.currentUser
+    filterText:"Filter",
+    user:this.props.currentUser,
+    searchTerm: this.props.searchTerm,
+    searchLoading:this.props.searchLoading,
+    searchResults:this.props.searchResults,
+    handleSearchChange: this.props.handleSearchChange
   }
   openModal = () =>{
     this.props.openWorkFlowModal();
   }
   handleResultSelect = (e, { result }) => this.setState({ value: result.title })
 
-  handleSearchChange = (e, { value }) => {
-    this.setState({ isLoading: true, value })
+  // handleHeaderSearchChange = (e, { value }) => {
+  //   this.setState({ isLoading: true, value })
 
-    setTimeout(() => {
-      if (this.state.value.length < 1) return this.setState(initialState)
-
-      const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
-      const isMatch = (result) => re.test(result.title)
-
-      this.setState({
-        isLoading: false,
-        results: _.filter(source, isMatch),
-      })
-    }, 300)
-  }
+  //   setTimeout(() => {
+  //     this.state.handleSearchChange(e);
+  //     this.setState({
+  //       isLoading: false,
+  //       // results: _.filter(source, isMatch),
+  //     })
+  //   }, 300)
+  // }
   createWorkflow = event =>{
     event.preventDefault();
 
   }
+  optionSelected = option=>{
+    if(option !== this.state.filterText){
+      this.setState({filterText:option});
+    }
+    else{
+      this.setState({filterText:"Filter"});
+    }
+  }
   
   render() {
-    const { isLoading, value, results } = this.state;
+    const { searchLoading, searchTerm,handleSearchChange,filterText } = this.state;
+    const results = this.state.searchResults;
 
     const { primaryColor } = "#ffffff";
     const pathname = window.location.pathname;
     return (
         <Grid style={{ background: primaryColor }}>
         <Grid.Column>
-          <Segment stacked>
+          <Segment clearing>
           <Grid.Row style={{height:"30px", margin: 0 }}>
 
           <Search
+            name="searchTerm"
             className="customSearch"
             floated ="left"
             style={{ float: "left", paddingRight:"10px"}}
             input={{placeholder:'Search Workflows', icon: 'search', iconPosition: 'left' }}
-            loading={isLoading}
-            onResultSelect={this.handleResultSelect}
-            onSearchChange={_.debounce(this.handleSearchChange, 500, {
-              leading: true,
-            })}
-            results={results}
-            value={value}
+            loading={searchLoading}
+            //onResultSelect={this.handleResultSelect}
+            onSearchChange={(e)=>handleSearchChange(e)}
+            // results={results}
+            // value={searchTerm}
           />
           <Dropdown style={{float:"left"}} 
-                    text='Filter'
+                    text={filterText}
                     icon='filter'
                     floated="left"
                     labeled
@@ -104,8 +113,8 @@ class WorkFlowsHeader extends React.Component {
             <Dropdown.Header icon='tags' content='Tag Label' /> */}
             <Dropdown.Menu scrolling>
               {tagOptions.map((option) => (
-                <Dropdown.Item key={option.value} {...option} />
-              ))}
+                <Dropdown.Item  key={option.value} {...option} onClick={()=>this.optionSelected(option.text)}/>
+              ),this)}
             </Dropdown.Menu>
           </Dropdown.Menu>
         </Dropdown>

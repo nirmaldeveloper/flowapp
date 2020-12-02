@@ -19,7 +19,10 @@ class WorkFlows extends React.Component {
     userID:this.props.currentUser.uid,
     workFlows:[],
     workFlowsRef: firebase.database().ref("workFlows"),
-    modal: false
+    modal: false,
+    searchTerm: "",
+    searchLoading: false,
+    searchResults: [],
   };
   componentDidMount() {
     console.log(this.state.userID);
@@ -43,18 +46,26 @@ class WorkFlows extends React.Component {
     this.state.workFlowsRef.off();
   };
 
+  updateWorkFlowStatus=id=>{
+console.log(id);
+  }
+
+  deleteWorkFlow=id=>{
+console.log(id);
+  }
+
   displayWorkFlows = flows =>
   flows.length > 0 &&
   flows.map(flow => (
         <Grid.Column width={4} key={flow.id} >
             <Segment style={{height:"140px"}} stacked>
             <Grid.Row>
-            <Button floated="right" color="red" style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='trash alternate outline' />
+            <Button floated="right" color="red" onClick={()=>this.deleteWorkFlow(flow.id)} style={{marginRight:"-30px",marginTop:"-35px"}} circular icon='trash alternate outline' />
             <Link to={`/workflow/${flow.id}`}><Segment><span style={{cursor:"pointer", display:"flex"}}>{flow.name}</span> </Segment></Link>
             </Grid.Row>
             <Grid.Row style={{marginTop:"20px",height:"25px"}}>
             <span floated="left" style={{float:"left",marginLeft:"4px"}}>{flow.status==1 ? 'PENDING': 'COMPLETED'}</span> 
-            <Button floated="right" color={flow.status==2?"green":"grey"} circular icon='check' />
+            <Button onClick={()=>this.updateWorkFlowStatus(flow.id)}  floated="right" color={flow.status==2?"green":"grey"} circular icon='check' />
             </Grid.Row>
             </Segment>
          </Grid.Column>
@@ -102,14 +113,41 @@ class WorkFlows extends React.Component {
     }
   }
 
+  handleSearchChange = event => {
+    // if(event && event.target){
+    this.setState(
+      {
+        searchTerm: event.target.value,
+        searchLoading: true
+      },
+      () =>
+       this.handleSearchWorkFlows()
+    );
+  // }
+  };
+
+  handleSearchWorkFlows = () => {
+    const workFlows = [...this.state.workFlows];
+    const regex = new RegExp(this.state.searchTerm, "gi");
+    const searchResults = workFlows.reduce((acc, workFlow) => {
+      if (workFlow.name && workFlow.name.match(regex)) 
+       {
+        acc.push(workFlow);
+      }
+      return acc;
+    }, []);
+    this.setState({ searchResults });
+    setTimeout(() => this.setState({ searchLoading: false }), 1000);
+  };
+
   render() {
     const pathname = window.location.pathname;
-    const{workFlows, modal} = this.state;
+    const{workFlows, modal, searchTerm,searchLoading,searchResults} = this.state;
     return (
     <div>
-        <WorkFlowsHeader openWorkFlowModal={this.openModal}/>
+        <WorkFlowsHeader handleSearchChange={this.handleSearchChange} searchTerm={searchTerm} searchLoading={searchLoading} searchResults={searchResults} openWorkFlowModal={this.openModal}/>
         <Grid columns={4} style={{margin:"1.5rem"}}>
-           {this.displayWorkFlows(workFlows)}
+           {searchTerm?this.displayWorkFlows(searchResults):this.displayWorkFlows(workFlows)}
          </Grid>
          <Modal basic open={modal} onClose={this.closeModal}>
           <Modal.Header>Add a WorkFlow</Modal.Header>
